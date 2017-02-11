@@ -19,7 +19,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		COMBAT,
 	}
 	
-	Builder kdk;
 	SpriteBatch batch;
 	Texture img;
 	Texture playerSprite;
@@ -27,7 +26,9 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	TiledMap map;
 	
-	public GAME_STATE gameState;
+	public World world;
+	
+	public GAME_STATE gameState = GAME_STATE.WORLD;
 	
 	@Override
 	public void create () {
@@ -35,6 +36,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		img = new Texture("badlogic.jpg");
 		playerSprite = new Texture("BODY_animation.png");
 		playerStance = new TextureRegion(playerSprite, 0, 0, 64, 64);
+		world = new World("forest_preview.png");
 //		map = new TmxMapLoader(new ExternalFileHandleResolver()).load("map.tmx");
 	}
 
@@ -47,6 +49,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		case MAIN_MENU:
 			break;
 		case WORLD:
+			world.draw();
 			break;
 		case COMBAT:
 			break;
