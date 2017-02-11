@@ -13,6 +13,12 @@ import com.google.protobuf.*;
 import com.google.protobuf.AbstractMessage.Builder;
 
 public class MyGdxGame extends ApplicationAdapter {
+	public enum GAME_STATE {
+		MAIN_MENU,
+		WORLD,
+		COMBAT,
+	}
+	
 	Builder kdk;
 	SpriteBatch batch;
 	Texture img;
@@ -20,6 +26,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	TextureRegion playerStance;
 	
 	TiledMap map;
+	
+	public GAME_STATE gameState;
 	
 	@Override
 	public void create () {
@@ -34,10 +42,20 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
+		
+		switch(gameState) {
+		case MAIN_MENU:
+			break;
+		case WORLD:
+			break;
+		case COMBAT:
+			break;
+		}
+		
+//		batch.begin();
 //		batch.draw(img, 0, 0);
-		batch.draw(playerStance, 0, 0);
-		batch.end();
+//		batch.draw(playerStance, 0, 0);
+//		batch.end();
 	}
 	
 	@Override
