@@ -13,6 +13,8 @@ public class World {
 	
 	public SpriteBatch batch;
 	
+	public Player player;
+	
 	public World(String fileName) {
 		
 		// image of World background loaded as a Texture
@@ -23,6 +25,8 @@ public class World {
 		
 		// back default boundaries the size of the background image
 		boundaries = new Rectangle(0, 0, background.getWidth(), background.getHeight());
+		
+		player = new Player();
 	}
 	
 	public World(String fileName, float width, float height) {
@@ -33,6 +37,7 @@ public class World {
 	public void draw() {
 		batch.begin();
 		batch.draw(background, 0, 0);
+		batch.draw(player.playerSprite, player.position.x, player.position.y);
 		batch.end();
 	}
 	
