@@ -1,10 +1,10 @@
 ## libgdx random 5
 
-android
-desktop
-gradle
-html
-ios
+android/
+desktop/
+gradle/
+html/
+ios/
 build.gradle
 gradle.properties
 gradlew
