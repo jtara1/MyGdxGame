@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -7,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 public class World {
+	float playerSpeed = 60.0f;
+	
 	public Texture background;
 	
 	public Rectangle boundaries;
@@ -44,4 +48,20 @@ public class World {
 	public void dispose() {
 		background.dispose();
 	}
+	
+	public void render() {
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) 
+		      player.position.x -= Gdx.graphics.getDeltaTime() * playerSpeed;
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) 
+			   player.position.x += Gdx.graphics.getDeltaTime() * playerSpeed;
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) 
+		      player.position.y += Gdx.graphics.getDeltaTime() * playerSpeed;
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) 
+			   player.position.y -= Gdx.graphics.getDeltaTime() * playerSpeed;
+
+		   //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		   batch.begin();
+		   batch.draw(player.playerSprite, player.position.x, player.position.y);
+		   batch.end();
+		} 
 }

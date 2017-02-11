@@ -50,6 +50,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			break;
 		case WORLD:
 			world.draw();
+			world.render();
 			break;
 		case COMBAT:
 			break;
