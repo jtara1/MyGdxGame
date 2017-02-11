@@ -50,14 +50,22 @@ public class World {
 	}
 	
 	public void render() {
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) 
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
 		      player.position.x -= Gdx.graphics.getDeltaTime() * playerSpeed;
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) 
+		      player.playerSprite = player.playerSprites[1];
+		   }
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) { 
 			   player.position.x += Gdx.graphics.getDeltaTime() * playerSpeed;
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) 
+			   player.playerSprite = player.playerSprites[3];
+		   }
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) { 
 		      player.position.y += Gdx.graphics.getDeltaTime() * playerSpeed;
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) 
+		      player.playerSprite = player.playerSprites[0];
+		   }
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) { 
 			   player.position.y -= Gdx.graphics.getDeltaTime() * playerSpeed;
+			   player.playerSprite = player.playerSprites[2];
+		   }
 
 		   //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		   batch.begin();
