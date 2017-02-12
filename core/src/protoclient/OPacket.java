@@ -4,8 +4,7 @@ import java.util.List;
 
 import com.google.protobuf.ByteString;
 
-import protopacks.PackFW;
-import protopacks.PackFW.PackHeaderIn;
+import ProtobufPackets.PackFW.PackHeaderIn;
 
 public class OPacket {
 	public static int BROADCAST_ID = 65535;

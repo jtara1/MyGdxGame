@@ -46,7 +46,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		world = new World("forest_preview.png");
 //		map = new TmxMapLoader(new ExternalFileHandleResolver()).load("map.tmx");
 		if (GameState == GAME_STATE.MULTIPLAYER) {
-			lobby = new Lobby("127.0.0.1", 5000, new LobbyMember("what up"));
+			//lobby = new Lobby("127.0.0.1", 5000, new LobbyMember("what up"));
+			menu = new MainMenu();
 		}
 		battlefield = new BattleField();
 	}
@@ -66,7 +67,31 @@ public class MyGdxGame extends ApplicationAdapter {
 			battlefield.draw();
 			break;
 		case MULTIPLAYER:
-			menu.draw();
+			if (menu == null) {
+				lobby.draw();
+				if (lobby.hasFailed()) {
+					System.out.println("Lobby fail");
+					lobby = null;
+					menu = new MainMenu();
+				}
+				else if (lobby.hasFinished()) {
+					
+				}
+			}
+			else
+			{
+				menu.draw();
+				if (menu.isFinished())
+				{
+					try {
+						int port = Integer.decode(menu.getPort());
+						lobby = new Lobby(menu.getIP(), port, new LobbyMember(menu.getName()));
+						menu = null;
+					} catch(NumberFormatException ex) {
+						menu = new MainMenu();
+					}
+				}
+			}
 			break;
 		}
 		

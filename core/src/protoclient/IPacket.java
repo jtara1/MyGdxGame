@@ -2,7 +2,7 @@ package protoclient;
 
 import com.google.protobuf.ByteString;
 
-import protopacks.PackFW.PackHeaderOut;
+import ProtobufPackets.PackFW.PackHeaderOut;
 
 public class IPacket {
 	private PackHeaderOut packOut;
