@@ -4,14 +4,17 @@ import java.util.List;
 
 import com.google.protobuf.ByteString;
 
+import protopacks.PackFW;
 import protopacks.PackFW.PackHeaderIn;
 
 public class OPacket {
+	public static int BROADCAST_ID = 65535;
 	private PackHeaderIn.Builder builder;
 	private ByteString data;
 	private boolean reliable;
 
 	public OPacket(String pKey, ByteString data) {
+		this.builder = PackHeaderIn.newBuilder();
 		builder.setLocKey(pKey);
 		this.data = data;
 		builder.setServerRead(false);
@@ -58,7 +61,8 @@ public class OPacket {
 		return reliable;
 	}
 	
-	ByteString serialize() {
-		return builder.build().toByteString().concat(data);
+	public ByteString getHeaderData() {
+		builder.setDataSize(data.size());
+		return builder.build().toByteString();
 	}
 }

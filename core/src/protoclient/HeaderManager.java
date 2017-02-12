@@ -56,8 +56,11 @@ public class HeaderManager {
 	}
 	
 	public ByteString serialize(OPacket oPack) {
-		ByteString data = ByteString.copyFrom(serializeHeaderSize(oPack.getData().size()));
-		data.concat(oPack.serialize());
+		ByteString headerData = oPack.getHeaderData();
+		ByteString data = ByteString.copyFrom(serializeHeaderSize(headerData.size()));
+		data = data.concat(headerData);
+		data = data.concat(oPack.getData());
+		System.out.println(data.size());
 		return data;
 	}
 	

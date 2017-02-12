@@ -5,8 +5,11 @@ import java.net.UnknownHostException;
 
 public class Client {
 	public static int HEADER_PACK_SIZE_BYTES = 2;
+	private boolean running;
 	private TCPConnection tcpConnection;
 	private UDPConnection udpConnection;
+	private Thread tcpThread;
+	private Thread udpThread;
 	private InetAddress serverAddress;
 	private int port;
 	private ConnectionEventHandler conFailHandler;
@@ -18,9 +21,20 @@ public class Client {
 	
 	public Client() {
 		this.tcpConnection = new TCPConnection(this);
-		this.udpConnection = new UDPConnection();
+		this.udpConnection = new UDPConnection(this);
 		this.headerManager = new HeaderManager();
 		this.packManager = new PacketManager();
+		running = false;
+	}
+	
+	public void send(OPacket oPack) {
+		if (oPack.getReliable()) {
+			tcpConnection.send(oPack);
+		}
+		else
+		{
+			udpConnection.send(oPack);
+		}
 	}
 	
 	HeaderManager getHeaderManager() {
@@ -31,7 +45,7 @@ public class Client {
 		return packManager;
 	}
 	
-	void addConnectionFailHandler(ConnectionEventHandler handler) {
+	public void addConnectionFailHandler(ConnectionEventHandler handler) {
 		this.conFailHandler = handler;
 	}
 	
@@ -39,7 +53,7 @@ public class Client {
 		return conFailHandler;
 	}
 	
-	void addConnectionErrorHandler(ConnectionEventHandler handler) {
+	public void addConnectionErrorHandler(ConnectionEventHandler handler) {
 		this.conErrorHandler = handler;
 	}
 	
@@ -47,7 +61,7 @@ public class Client {
 		return conErrorHandler;
 	}
 	
-	void addConnectionCloseHandler(ConnectionEventHandler handler) {
+	public void addConnectionCloseHandler(ConnectionEventHandler handler) {
 		this.conCloseHandler = handler;
 	}
 	
@@ -55,7 +69,7 @@ public class Client {
 		return conCloseHandler;
 	}
 	
-	void addConnectionOpenHandler(ConnectionEventHandler handler) {
+	public void addConnectionOpenHandler(ConnectionEventHandler handler) {
 		this.conOpenHandler = handler;
 	}
 	
@@ -71,12 +85,14 @@ public class Client {
 		return port;
 	}
 	
-	boolean createManagers() {
-		
+	boolean startUDP(int port) {
+		udpThread = new Thread(udpConnection);
+		udpConnection.setLocalPort(port);
+		udpThread.start();
 		return true;
 	}
 	
-	boolean run(String host, int port) {
+	public boolean run(String host, int port) {
 		try {
 			this.serverAddress = InetAddress.getByName(host);
 			this.port = port;
@@ -85,10 +101,17 @@ public class Client {
 			System.err.println("Could not resolve the host " + host);
 			e.printStackTrace();
 		}
+		tcpThread = new Thread(tcpConnection);
+		tcpThread.start();
 		return true;
 	}
 	
-	void stop() {
-		
+	public void stop() {
+		tcpConnection.stop();
+		running = false;
+	}
+	
+	public boolean isRunning() {
+		return running;
 	}
 }

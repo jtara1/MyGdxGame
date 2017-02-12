@@ -24,6 +24,7 @@ public class TCPConnection implements Runnable
 	public void run() {
 		try {
 			socket = new Socket(owner.getServerAddress(), owner.getPort());
+			socket.setReuseAddress(true);
 			inStream = socket.getInputStream();
 			outStream = socket.getOutputStream();
 		} catch (IOException e) {
@@ -31,6 +32,13 @@ public class TCPConnection implements Runnable
 			if (conFailHandler != null) {
 				conFailHandler.run(e.getMessage());
 			}
+			System.err.println(e.getMessage());
+			return;
+		}
+		owner.startUDP(socket.getLocalPort());
+		ConnectionEventHandler conOpenHandler = owner.getConnectionOpenHandler();
+		if (conOpenHandler != null) {
+			conOpenHandler.run("Connected");
 		}
 		while (true) {
 			byte[] data = new byte[Client.HEADER_PACK_SIZE_BYTES];
@@ -45,15 +53,26 @@ public class TCPConnection implements Runnable
 				iPack.setData(ByteString.copyFrom(data));
 				if (!owner.getPacketManager().callHandler(iPack)){
 					System.err.println("Unrecognized key: " + iPack.getPKey());
+					socket.close();
+					return;
 				}
 			} catch (IOException e) {
 				if (!socket.isClosed() && socket.isConnected()) {
 					ConnectionEventHandler conErrorHandler = owner.getConnectionErrorHandler();
+					System.err.println("Recv error: " + e.getMessage());
 					if (conErrorHandler != null) {
 						conErrorHandler.run("Recv error: " + e.getMessage());
 					}
+					try {
+						socket.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					return;
 				}
 				else {
+					System.err.println("Connection closed: " + e.getMessage());
 					if (!socket.isClosed()) {
 						try {
 							socket.close();
@@ -69,9 +88,10 @@ public class TCPConnection implements Runnable
 		}
 	}
 	
-	public boolean send(ByteString data) {
+	public boolean send(OPacket oPack) {
+		System.out.println("Sent called");
 		try {
-			outStream.write(data.toByteArray());
+			outStream.write(owner.getHeaderManager().serialize(oPack).toByteArray());
 		} catch (IOException e) {
 			ConnectionEventHandler conErrorHandler = owner.getConnectionErrorHandler();
 			if (conErrorHandler != null) {
@@ -82,11 +102,13 @@ public class TCPConnection implements Runnable
 	}
 	
 	public void stop() {
-		try {
-			socket.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (socket != null) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
