@@ -6,32 +6,34 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Player {
-	private Texture spritePage;
+	private static Texture spritePage;
 	private int spriteSize = 64;
 	private Rectangle boundaries;
 	
-	public TextureRegion sprite;
-	public TextureRegion[] sprites;
+	public static TextureRegion sprite;
+	public static TextureRegion[] sprites;
 	public Vector2 position;
 	public Vector2 velocity;
 	public float speed;
 	
 	public Player() {
 //		super(0, 0, (float)spriteSize, (float)spriteSize);
-		spritePage = new Texture("mage walking poses sheet copy.png");
-
-		sprites = new TextureRegion[4];
-		// sprites of the player facing up, left, down, right
-		for (int i = 0; i < 4; i++) {
-			sprites[i] = new TextureRegion(
-					spritePage, 
-					spriteSize * i, 
-					spriteSize * i,
-					spriteSize,
-					spriteSize);
+		if (spritePage == null) {
+			spritePage = new Texture("mage walking poses sheet copy.png");
+	
+			sprites = new TextureRegion[4];
+			// sprites of the player facing up, left, down, right
+			for (int i = 0; i < 4; i++) {
+				sprites[i] = new TextureRegion(
+						spritePage, 
+						spriteSize * i, 
+						spriteSize * i,
+						spriteSize,
+						spriteSize);
+			}
+			
+			sprite = sprites[2];
 		}
-		
-		sprite = sprites[2];
 		
 		position = new Vector2(500, 500);
 		velocity = new Vector2(0, 0);
