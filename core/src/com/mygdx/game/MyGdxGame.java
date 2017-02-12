@@ -26,7 +26,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 		playerSprite = new Texture("BODY_animation.png");
-		playerStance = new TextureRegion(playerSprite, 0, 0, 64, 64);
 //		map = new TmxMapLoader(new ExternalFileHandleResolver()).load("map.tmx");
 	}
 
