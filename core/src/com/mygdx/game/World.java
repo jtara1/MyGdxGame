@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 public class World {
+	
+	private OrthographicCamera camera;
+	
 	public Texture background;
 	
 	public Rectangle boundaries;
@@ -33,6 +37,15 @@ public class World {
 		player = new Player();
 		
 		input = new InputHandler();
+		
+		float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        
+        //Creates a new camera, sets its position focused on the player, and zooms out
+        camera = new OrthographicCamera(30, 30 * (h / w));
+        camera.position.set(player.position.x,player.position.y,0);
+        camera.zoom += 20;
+        camera.update();
 	}
 	
 	public World(String fileName, float width, float height) {
@@ -41,10 +54,12 @@ public class World {
 	}
 	
 	public void draw() {
+	    batch.setProjectionMatrix(camera.combined);
+	        
 		batch.begin();
 		batch.draw(background, 0, 0);
 		batch.draw(player.sprite, player.position.x, player.position.y);
-		input.move(player);
+		input.move(player, camera);
 		batch.end();
 	}
 	
