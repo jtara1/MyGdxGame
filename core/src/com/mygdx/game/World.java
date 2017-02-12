@@ -144,6 +144,10 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	
 	public OrthographicCamera camera;
 	
+	public Client client;
+	
+	public UserInfo userInfo;
+	
 	public World(Client client, UserInfo userInfo, ArrayList<UserInfo> peers, String fileName) {
 		this.userInfo = userInfo;
 		this.client = client;
