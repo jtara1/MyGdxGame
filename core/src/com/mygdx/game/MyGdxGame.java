@@ -13,7 +13,12 @@ import com.google.protobuf.*;
 import com.google.protobuf.AbstractMessage.Builder;
 
 public class MyGdxGame extends ApplicationAdapter {
-	Builder kdk;
+	public enum GAME_STATE {
+		MAIN_MENU,
+		WORLD,
+		COMBAT,
+	}
+	
 	SpriteBatch batch;
 	Texture img;
 	Texture playerSprite;
@@ -21,11 +26,17 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	TiledMap map;
 	
+	public World world;
+	
+	public GAME_STATE gameState = GAME_STATE.WORLD;
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 		playerSprite = new Texture("BODY_animation.png");
+		playerStance = new TextureRegion(playerSprite, 0, 0, 64, 64);
+		world = new World("forest_preview.png");
 //		map = new TmxMapLoader(new ExternalFileHandleResolver()).load("map.tmx");
 	}
 
@@ -33,10 +44,21 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
+		
+		switch(gameState) {
+		case MAIN_MENU:
+			break;
+		case WORLD:
+			world.draw();
+			break;
+		case COMBAT:
+			break;
+		}
+		
+//		batch.begin();
 //		batch.draw(img, 0, 0);
-		batch.draw(playerStance, 0, 0);
-		batch.end();
+//		batch.draw(playerStance, 0, 0);
+//		batch.end();
 	}
 	
 	@Override
@@ -44,5 +66,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.dispose();
 		img.dispose();
 		playerSprite.dispose();
+		world.dispose();
 	}
 }
