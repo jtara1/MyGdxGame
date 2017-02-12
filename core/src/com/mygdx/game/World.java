@@ -17,6 +17,8 @@ public class World {
 	
 	public Player player;
 	
+	public InputHandler input;
+	
 	public World(String fileName) {
 		
 		// image of World background loaded as a Texture
@@ -29,6 +31,8 @@ public class World {
 		boundaries = new Rectangle(0, 0, background.getWidth(), background.getHeight());
 		
 		player = new Player();
+		
+		input = new InputHandler();
 	}
 	
 	public World(String fileName, float width, float height) {
@@ -40,6 +44,7 @@ public class World {
 		batch.begin();
 		batch.draw(background, 0, 0);
 		batch.draw(player.sprite, player.position.x, player.position.y);
+		input.move(player);
 		batch.end();
 	}
 	
@@ -47,27 +52,4 @@ public class World {
 		background.dispose();
 	}
 	
-	public void render() {
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
-		      player.position.x -= Gdx.graphics.getDeltaTime() * player.speed;
-		      player.sprite = player.sprites[1];
-		   }
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) { 
-			   player.position.x += Gdx.graphics.getDeltaTime() * player.speed;
-			   player.sprite = player.sprites[3];
-		   }
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) { 
-		      player.position.y += Gdx.graphics.getDeltaTime() * player.speed;
-		      player.sprite = player.sprites[0];
-		   }
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) { 
-			   player.position.y -= Gdx.graphics.getDeltaTime() * player.speed;
-			   player.sprite = player.sprites[2];
-		   }
-
-		   //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		   batch.begin();
-		   batch.draw(player.sprite, player.position.x, player.position.y);
-		   batch.end();
-		} 
 }
