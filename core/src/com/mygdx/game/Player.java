@@ -16,6 +16,8 @@ public class Player {
 	public Vector2 velocity;
 	public float speed;
 	
+	public float distancePerFrame = speed / 50f;
+	
 	public Player() {
 //		super(0, 0, (float)spriteSize, (float)spriteSize);
 		if (spritePage == null) {

@@ -136,7 +136,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	
 	public Player player;
 	
-	public ArrayList<NoWalkZone> noWalkZones;
+	public ArrayList<Rectangle> noWalkZones;
 	
 	public ArrayList<Monster> monsters;
 	
@@ -179,7 +179,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		
 		player = new Player();
 		
-		noWalkZones = new ArrayList<NoWalkZone>();
+		noWalkZones = new ArrayList<Rectangle>();
 		monsters = new ArrayList<Monster>();
 		
 		createNoWalkZones();
@@ -231,7 +231,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		}
 	}
 	public void createNoWalkZones() {
-		NoWalkZone zone1 = new NoWalkZone(335, 149, 130, 140);
+		Rectangle zone1 = new Rectangle(335, 149, 130, 140);
 		noWalkZones.add(zone1);
 	}
 	
@@ -248,7 +248,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 //			System.out.print(sidesBlocked[i] + " ");
 //		} System.out.println();
 		
-		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {// && !player.blockadeAhead(DIRECTION_LEFT, blockade)) {
+		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT) && !player.blockadeAhead(DIRECTION_LEFT, noWalkZones.get(0))) {
 			if (sidesBlocked[3] == DIRECTION_NONE) {
 //				player.move(-player.speed * Gdx.graphics.getDeltaTime(), 0);
 				player.move(DIRECTION_LEFT);
@@ -325,20 +325,20 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public int[] playerCollidedWithNoWalkZone() {
 		int[] allSidesClear = {DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE};
 		
-		for (NoWalkZone zone : noWalkZones) {
+		for (Rectangle zone : noWalkZones) {
 			//System.out.println("working");
 			int[] sidesBlocked = allSidesClear;
 			
-			if (player.blockadeAbove(zone.boundaries)) {
+			if (player.blockadeAbove(zone)) {
 				sidesBlocked[0] = 1;
 			} 
-			if (player.blockadeRight(zone.boundaries)) {
+			if (player.blockadeRight(zone)) {
 				sidesBlocked[1] = 1;
 			} 
-			if (player.blockadeBelow(zone.boundaries)) {
+			if (player.blockadeBelow(zone)) {
 				sidesBlocked[2] = 1;
 			} 
-			if (player.blockadeLeft(zone.boundaries)){
+			if (player.blockadeLeft(zone)){
 				sidesBlocked[3] = 1;
 			}
 
