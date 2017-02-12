@@ -90,12 +90,12 @@ public class World {
 	}
 	public void drawMonsters() {
 		for(int i = 0; i < monsters.size(); i++)
-			batch.draw(monsters.get(i).standingSprite, monsters.get(i).location.x, monsters.get(i).location.y);
+			batch.draw(monsters.get(i).curSprite, monsters.get(i).getLocation().x, monsters.get(i).getLocation().y);
 	}
 	public void checkMonsterCollision(){
 		for(int i = 0; i < monsters.size(); i++){
-			if(Math.abs(monsters.get(i).location.x - player.position.x) <= 15 &&
-					Math.abs(monsters.get(i).location.y - player.position.y) <= 15)
+			if(Math.abs(monsters.get(i).getLocation().x - player.position.x) <= 15 &&
+					Math.abs(monsters.get(i).getLocation().y - player.position.y) <= 15)
 				MyGdxGame.GameState = GAME_STATE.COMBAT;
 		}
 	}
