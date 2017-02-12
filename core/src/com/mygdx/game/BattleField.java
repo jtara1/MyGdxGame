@@ -1,13 +1,14 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 
 public class BattleField {
-	private Texture background, menu, masterHpMpBar, playerHpMpBar;
-	private TextureRegion menuPo, masterHpMpBarPo, playerHpMpBarPo;
+	private Texture background;
+	private Texture menu, masterHpMpBar, playerHpMpBar;
 	private Master master;
 	private Player player;
 	
@@ -15,11 +16,8 @@ public class BattleField {
 		// image of background, menu, hpMpbars
 		background = new Texture(filename);
 		menu = new Texture("botton_default.png");
-		menuPo = new TextureRegion(menu, 0, 0, 400, 400);
 		masterHpMpBar = new Texture("bar_hp_mp.png");
-		masterHpMpBarPo = new TextureRegion(masterHpMpBar, 0, 700, 400, 50);
 		playerHpMpBar = new Texture("bar_hp_mp.png");
-		playerHpMpBarPo = new TextureRegion(playerHpMpBar, 800, 700, 400, 50);
 		master = new Master();
 		player = new Player();
 	}
@@ -29,10 +27,20 @@ public class BattleField {
 		boundaries = new Rectangle(0, 0, width, height);
 	}
 	
-	public void draw() {
-		batch.begin();
-		batch.draw(background, 0, 0);
-		batch.draw(player.playerSprite, player.position.x, player.position.y);
-		batch.end();
+	public void handleInput() {
+		//TODO
+	}
+	
+	public void update(float dt) {
+		//TODO
+	}
+	
+
+	public void render(SpriteBatch sb) {
+		sb.draw(background, 0, 0);
+		sb.draw(menu, 0, 0, 400, 400);
+		sb.draw(masterHpMpBar, 0, 700, 400, 50);
+		sb.draw(playerHpMpBar, 800, 700, 400, 50);
+		sb.end();
 	}
 }
