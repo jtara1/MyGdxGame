@@ -94,6 +94,7 @@ public class TCPConnection implements Runnable
 		try {
 			outStream.write(owner.getHeaderManager().serialize(oPack).toByteArray());
 		} catch (IOException e) {
+			e.printStackTrace();
 			ConnectionEventHandler conErrorHandler = owner.getConnectionErrorHandler();
 			if (conErrorHandler != null) {
 				conErrorHandler.run("Send err: " + e.getMessage());
@@ -104,6 +105,7 @@ public class TCPConnection implements Runnable
 	
 	public void stop() {
 		if (socket != null) {
+			System.out.println("STOPPED CALLED");
 			try {
 				socket.close();
 			} catch (IOException e) {

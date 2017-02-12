@@ -324,7 +324,9 @@ public class Lobby implements PacketHandlerOwner
 		createPacketHandlers();
 		client.addConnectionOpenHandler(new LobbyConnectionOpenHandler(this));
 		client.addConnectionCloseHandler(new LobbyConnectionCloseHandler(client));
-		client.run(address, port);
+		if (!client.run(address, port)) {
+			failed = true;
+		}
 	}
 	
 	private void initGraphics() {
