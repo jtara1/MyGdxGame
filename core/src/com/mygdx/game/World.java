@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.game.MyGdxGame.GAME_STATE;
 
 public class World {
 	public final int DIRECTION_UP = 0;
@@ -91,6 +92,13 @@ public class World {
 		for(int i = 0; i < monsters.size(); i++)
 			batch.draw(monsters.get(i).standingSprite, monsters.get(i).location.x, monsters.get(i).location.y);
 	}
+	public void checkMonsterCollision(){
+		for(int i = 0; i < monsters.size(); i++){
+			if(Math.abs(monsters.get(i).location.x - player.position.x) <= 15 &&
+					Math.abs(monsters.get(i).location.y - player.position.y) <= 15)
+				MyGdxGame.GameState = GAME_STATE.COMBAT;
+		}
+	}
 	public void createNoWalkZones() {
 		NoWalkZone zone1 = new NoWalkZone(335, 149, 130, 140);
 		noWalkZones.add(zone1);
@@ -156,6 +164,8 @@ public class World {
 		
 		batch.draw(player.sprite, player.position.x, player.position.y);
 		drawMonsters();
+		checkMonsterCollision();
+		
 //		input.move(player, camera);
 		batch.end();
 	}
