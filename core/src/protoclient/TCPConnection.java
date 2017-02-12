@@ -29,7 +29,7 @@ public class TCPConnection implements Runnable
 			inStream = socket.getInputStream();
 			outStream = socket.getOutputStream();
 		} catch (IOException e) {
-			/*
+			e.printStackTrace();
 			allowFail = true;
 			ConnectionEventHandler conFailHandler = owner.getConnectionFailHandler();
 			e.printStackTrace();
@@ -39,7 +39,6 @@ public class TCPConnection implements Runnable
 			
 			System.err.println(e.getMessage());
 			return;
-			*/
 		}
 		owner.startUDP(socket.getLocalPort());
 		ConnectionEventHandler conOpenHandler = owner.getConnectionOpenHandler();
@@ -62,6 +61,7 @@ public class TCPConnection implements Runnable
 					System.err.println("Unrecognized key: " + iPack.getPKey());
 				}
 			} catch (IOException e) {
+				e.printStackTrace();
 				/*
 				e.printStackTrace();
 				if (!socket.isClosed() && socket.isConnected()) {
