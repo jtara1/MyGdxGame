@@ -1,7 +1,14 @@
 package com.mygdx.game;
 
+import java.awt.Font;
+import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import protoclient.Client;
@@ -114,25 +121,49 @@ class LobbyMember {
 	public String name;
 	int heroID;
 	public int peerID;
+	
+	public void drawBackground(ShapeRenderer renderer, float x, float y, float w, float h) {
+		renderer.rect(x, y, w, h);
+	}
+	
+	public void drawText(BitmapFont font, SpriteBatch batch, float x, float y) {
+		font.draw(batch, name, x, y);
+	}
 }
 
 public class Lobby implements PacketHandlerOwner
 {
+	private static final float SCREEN_W = 640;
+	private static final float SCREEN_H = 480;
+	private static final float TITLE_OFF = 60;
+	private static final float MEMBER_BOX_OFF = 10;
+	private static final float MEMBER_BOX_H = 50;
+	private ShapeRenderer renderer;
 	private boolean displayLobby;
 	public Client client;
 	public LobbyMember user;
 	public LinkedList<LobbyMember> lobbyMembers;
+	private BitmapFont font;
+	private SpriteBatch batch;
 
 	public Lobby(String address, int port, LobbyMember user)
 	{
+		displayLobby = false;
 		this.user = user;
 		lobbyMembers = new LinkedList<LobbyMember>();
-		displayLobby = false;
-		client = new Client();
-		client.addConnectionOpenHandler(new LobbyConnectionOpenHandler(this));
-		client.addConnectionCloseHandler(new LobbyConnectionCloseHandler(client));
-		createPacketHandlers();
-		client.run(address, port);
+		
+		initInternet(address, port);
+		initGraphics();
+	}
+	
+	public void draw() {
+		if (!displayLobby) {
+			drawLoad();
+		}
+		else
+		{
+			drawLobby();
+		}
 	}
 
 	@Override
@@ -143,10 +174,84 @@ public class Lobby implements PacketHandlerOwner
 
 	@Override
 	public void removePacketHandlers() {
-		
+		client.getPacketManager().removePacketHandler("A0");
+		client.getPacketManager().removePacketHandler("A1");
 	}
 	
 	public void setDisplayLobby(boolean mode) {
 		this.displayLobby = mode;
+	}
+	
+	private void initInternet(String address, int port) {
+		client = new Client();
+		createPacketHandlers();
+		client.addConnectionOpenHandler(new LobbyConnectionOpenHandler(this));
+		client.addConnectionCloseHandler(new LobbyConnectionCloseHandler(client));
+		client.run(address, port);
+	}
+	
+	private void initGraphics() {
+		renderer = new ShapeRenderer();
+		font = new BitmapFont();
+		batch = new SpriteBatch();
+	}
+	
+	private void drawLoad() {
+		font.getData().setScale(3);
+		font.setColor(0, 0, 0, 1);
+		batch.begin();
+		font.draw(batch, "Connecting...", SCREEN_W/3, SCREEN_H/2);
+		batch.end();
+	}
+	
+	private void drawLobby() {
+		renderer.begin(ShapeType.Filled);
+		
+		drawLobbyBackground();
+		drawMemberBoxBackground();
+		
+		renderer.end();
+		batch.begin();
+		drawMemberBoxText();
+		batch.end();
+	}
+	
+	private void drawLobbyBackground() {
+		renderer.setColor(0, 0, 0, 1);
+		renderer.rect(0, 0, SCREEN_W, SCREEN_H);
+		renderer.setColor(.5f, .5f, .5f, .3f);
+		renderer.rect(MEMBER_BOX_OFF/2, MEMBER_BOX_OFF/2, SCREEN_W/2 - MEMBER_BOX_OFF, 
+				SCREEN_H - MEMBER_BOX_OFF - TITLE_OFF);
+		renderer.rect(SCREEN_W/2 + MEMBER_BOX_OFF/2, MEMBER_BOX_OFF/2, 
+				SCREEN_W/2 - MEMBER_BOX_OFF, 
+				SCREEN_H - MEMBER_BOX_OFF - TITLE_OFF);
+		renderer.setColor(1, 1, 1, 1);
+		renderer.rect(MEMBER_BOX_OFF, MEMBER_BOX_OFF, SCREEN_W/2 - MEMBER_BOX_OFF * 2, 
+				SCREEN_H - MEMBER_BOX_OFF * 2 - TITLE_OFF);
+		renderer.rect(SCREEN_W/2 + MEMBER_BOX_OFF, MEMBER_BOX_OFF, 
+				SCREEN_W/2 - MEMBER_BOX_OFF * 2, 
+				SCREEN_H - MEMBER_BOX_OFF * 2 - TITLE_OFF);
+	}
+	
+	private void drawMemberBoxBackground() {
+		float y = SCREEN_H - MEMBER_BOX_OFF * 2 - TITLE_OFF - MEMBER_BOX_H;
+		Iterator<LobbyMember> iter = lobbyMembers.iterator();
+		renderer.setColor(.8f, .8f, .8f, 1);
+		while (iter.hasNext()) {
+			iter.next().drawBackground(renderer, SCREEN_W/2 + MEMBER_BOX_OFF * 2, 
+					y, SCREEN_W/2 - MEMBER_BOX_OFF * 4, MEMBER_BOX_H);
+			y -= MEMBER_BOX_H + MEMBER_BOX_OFF;
+		}
+	}
+	
+	private void drawMemberBoxText() {
+		font.getData().setScale(1);
+		font.setColor(0, 0, 0, 1);
+		float y = SCREEN_H - MEMBER_BOX_OFF * 2 - TITLE_OFF - MEMBER_BOX_H;
+		Iterator<LobbyMember> iter = lobbyMembers.iterator();
+		while (iter.hasNext()) {
+			iter.next().drawText(font, batch, SCREEN_W/2 + MEMBER_BOX_OFF * 4, y + MEMBER_BOX_H/2 + 10);
+			y -= MEMBER_BOX_H + MEMBER_BOX_OFF;
+		}
 	}
 }
