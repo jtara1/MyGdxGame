@@ -290,6 +290,8 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		}
 		camera.position.set(player.position, 0);
 		camera.update();
+		
+		player.draw();
 			   
 //		System.out.println("Player position: " + player.position);
 //		playerCollidedWithNoWalkZone();

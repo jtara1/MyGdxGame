@@ -6,12 +6,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Player {
-	private static Texture spritePage;
+	private Texture spritePage;
 	private int spriteSize = 64;
 	private Rectangle boundaries;
+	private String fileName;
 	
-	public static TextureRegion sprite;
-	public static TextureRegion[] sprites;
+	public TextureRegion sprite;
+	public TextureRegion[] sprites;
 	public Vector2 position;
 	public Vector2 velocity;
 	public float speed;
@@ -19,20 +20,10 @@ public class Player {
 	public float distancePerFrame = speed / 50f;
 	
 	public Player() {
+		fileName = "mage walking poses sheet copy.png";
 //		super(0, 0, (float)spriteSize, (float)spriteSize);
 		if (spritePage == null) {
 			spritePage = new Texture("mage walking poses sheet copy.png");
-	
-			sprites = new TextureRegion[4];
-			// sprites of the player facing up, left, down, right
-			for (int i = 0; i < 4; i++) {
-				sprites[i] = new TextureRegion(
-						spritePage, 
-						spriteSize * i, 
-						spriteSize * i,
-						spriteSize,
-						spriteSize);
-			}
 			
 			sprite = sprites[2];
 		}
@@ -44,6 +35,31 @@ public class Player {
 		speed = 180f;
 		
 //		boundaries = new Rectangle(position.x, position.y, spriteSize, spriteSize);
+	}
+	
+	public void draw() {
+		if (spritePage == null) {
+			spritePage = new Texture(fileName);
+		}
+		if (sprites == null) {
+			initializeSprites();
+		}
+		if (sprite == null) {
+			sprite = sprites[2];
+		}
+	}
+
+	public void initializeSprites() {
+		sprites = new TextureRegion[4];
+		// sprites of the player facing up, left, down, right
+		for (int i = 0; i < 4; i++) {
+			sprites[i] = new TextureRegion(
+					spritePage, 
+					spriteSize * i, 
+					spriteSize * i,
+					spriteSize,
+					spriteSize);
+		}
 	}
 	
 	public void move(int direction) {
