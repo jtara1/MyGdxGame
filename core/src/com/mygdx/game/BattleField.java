@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,22 +21,24 @@ public class BattleField {
 	
 	public Rectangle boundaries;
 	
+	public ActionPackage actionPack;
+	
 	public SpriteBatch batch;
 	
 	public InputHandler input;
 	
 	private ActionController ac;
 	
-	private ActionReceiver ar;
 	
 	private BattleAgent monster1,player;
 	
 	public BattleField() {
 		
-		monster1=new Monster(new Vector2(100,100));
-		player=new BattlePlayer(new Vector2(425,250));
-		ac=new ActionController();
-		ar=new ActionReceiver();
+		batch = new SpriteBatch();
+		actionPack=new ActionPackage();
+		monster1=new Monster(new Vector2(100,200));
+		player=new BattlePlayer(new Vector2(350,250));
+		ac=new ActionController(batch);
 		// image of World background loaded as a Texture
 		background = new Texture("BattleField/Sky.jpg");
 		worldBackGround = new Texture("forest_preview.png");
@@ -51,31 +54,44 @@ public class BattleField {
 		playerHpMpBar = new Texture("BattleField/menu/bar_hp_mp.png");
 		
 		// used to draw each Texture
-		batch = new SpriteBatch();
+		
 	}
 	
 	public BattleField(String fileName, float width, float height) {
 		this();
 		boundaries = new Rectangle(0, 0, width, height);
-		monster1=new Monster(new Vector2(100,100));
-		player=new BattlePlayer(new Vector2(425,250));
 	}
 	
+	private boolean actionMode = false;
+	
 	public void draw() {
-		boolean isActioning=ac.update();
-	   
+		
 		batch.begin();
-
+		
 		batch.draw(background, 0, 0, 750, 500);
-		if(!isActioning)
-		{
+		
+		if(actionMode)
+		{ 
+			boolean isActioning=ac.update();
+			
+			if(!isActioning&&actionPack.isEmpty())
+				actionMode=false;
+			else if(!isActioning)
+				ac.loadNewAction(actionPack.getAction());
+		}
+	   
+		else{
+			
 			drawActionMenu();
-			Gdx.input.setInputProcessor(new ActionInputProcessor(player, monster1, ar));
-			if(ar.hasReceived())
+			Gdx.input.setInputProcessor(new ActionInputProcessor(player, monster1, actionPack));
+			if(actionPack.fullPack())
 			{
-				ac.loadNewAction(ar);
+				Gdx.input.setInputProcessor(new InputAdapter());
+				actionMode=true;
 			}
 		}
+		
+		
 		batch.draw(monster1.curSprite, monster1.getLocation().x,monster1.getLocation().y);
 		batch.draw(player.curSprite, player.getLocation().x,player.getLocation().y);
 		
@@ -87,6 +103,9 @@ public class BattleField {
 	}
 	
 	public void drawActionMenu() {
+		
+		int height=Gdx.graphics.getHeight();
+		int width=Gdx.graphics.getWidth();
 		
 		batch.draw(attack, 500, 140, 100, 50);
 		batch.draw(text4, 500, 140, 100, 50);
