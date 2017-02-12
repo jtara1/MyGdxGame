@@ -10,14 +10,14 @@ public class ActionInputProcessor implements InputProcessor {
 	
 	private BattleAgent receiver;
 	
-	private ActionReceiver ar;
+	private ActionPackage pack;
 	
 	public ActionInputProcessor(BattleAgent issuer,BattleAgent receiver,
-			ActionReceiver ar)
+			ActionPackage pack)
 	{
 		this.issuer=issuer;
 		this.receiver=receiver;
-		this.ar=ar;
+		this.pack=pack;
 	}
 	
 	@Override
@@ -44,7 +44,8 @@ public class ActionInputProcessor implements InputProcessor {
 		String input=actionCheck(screenX, screenY);
 		if (input!=null)
 		{
-			ar.receiving(issuer, receiver, input, 1);
+			pack.addAction(new ActionReceiver(issuer, receiver, input, 99));
+			pack.addAction(new ActionReceiver(receiver, issuer, "basicAttack", 15));
 			return true;
 		}
 		else
@@ -83,6 +84,10 @@ public class ActionInputProcessor implements InputProcessor {
 		System.out.println(y);
 		if(x>=500&&x<=600&&y>=320&&y<=370)
 			return "basicAttack";
+		else if(x>=500&&x<=600&&y>=200&&y<=250)
+			return "defense";
+		else if(x>=500&&x<=600&&y>=260&&y<=310)
+			return "fireBall";
 		else 
 			return null;
 	}

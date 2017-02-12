@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -10,6 +12,8 @@ public abstract class BattleAgent {
 	private int moveCounter = 0;
 	
 	public TextureRegion curSprite;
+	
+	private boolean isDefense;
 	
 	Vector2 location; 
 	
@@ -34,6 +38,7 @@ public abstract class BattleAgent {
 		this.attackSprites=attackSprites;
 		this.moveSprites=moveSprites;
 		curSprite=standingSprite;
+		isDefense=false;
 	}
 	
 	/**
@@ -78,6 +83,21 @@ public abstract class BattleAgent {
 	public Vector2 getLocation()
 	{
 		return this.location;
+	}
+	
+	public void defense()
+	{
+		isDefense=true;
+	}
+	
+	public void resetDefense()
+	{
+		isDefense=false;
+	}
+	
+	public boolean isDefense()
+	{
+		return isDefense;
 	}
 
 }

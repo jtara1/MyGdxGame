@@ -4,7 +4,7 @@
 package com.mygdx.game;
 
 
-public class ActionReceiver {
+public class ActionReceiver implements Comparable<ActionReceiver> {
 	
 	private BattleAgent issuer;
 	
@@ -17,7 +17,7 @@ public class ActionReceiver {
 	private boolean hasReceived=false;
 	
 	
-	public void receiving(BattleAgent issuer,BattleAgent receiver,String actionType,int priority)
+	public ActionReceiver(BattleAgent issuer,BattleAgent receiver,String actionType,int priority)
 	{
 		this.issuer=issuer;
 		this.receiver=receiver;
@@ -51,9 +51,17 @@ public class ActionReceiver {
 		return priority;
 	}
 	
-	public void done()
-	{
-		hasReceived=false;
+
+
+
+	@Override
+	public int compareTo(ActionReceiver o) {
+		if(this.getPriority()<this.getPriority())
+			return -1;
+		else if (this.getPriority()==o.getPriority())
+			return 0;
+		else 
+			return 1;
 	}
 
 }
