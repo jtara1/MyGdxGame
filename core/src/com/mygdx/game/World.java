@@ -247,7 +247,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 //			System.out.print(sidesBlocked[i] + " ");
 //		} System.out.println();
 		
-		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT) && !player.blockadeAhead(DIRECTION_LEFT, noWalkZones.get(0))) {
+		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
 			if (sidesBlocked[3] == DIRECTION_NONE) {
 //				player.move(-player.speed * Gdx.graphics.getDeltaTime(), 0);
 				player.move(DIRECTION_LEFT);

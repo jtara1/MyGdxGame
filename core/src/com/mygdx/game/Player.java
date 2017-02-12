@@ -18,7 +18,7 @@ public class Player {
 	public Vector2 velocity;
 	public float speed;
 	
-	public float distancePerFrame = speed / 50f;
+	public float distancePerFrame;
 	
 	public Player() {
 		fileName = "mage walking poses sheet copy.png";
@@ -27,6 +27,7 @@ public class Player {
 		position = new Vector2(500, 500);
 		velocity = new Vector2(0, 0);
 		speed = 180f;
+		distancePerFrame = speed / 50f;
 		
 //		boundaries = new Rectangle(position.x, position.y, spriteSize, spriteSize);
 	}
