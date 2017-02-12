@@ -72,6 +72,9 @@ public class BattleField {
 		batch.draw(text2, 500, 260, 100, 50);
 		batch.draw(attack, 500, 320, 100, 50);
 		batch.draw(text1, 500, 320, 100, 50);
+		
+		batch.draw(masterHpMpBar, 40, 50, 100, 30);
+		batch.draw(playerHpMpBar, 350, 400, 100, 30);
 		batch.end();
 	}
 	
