@@ -65,9 +65,6 @@ public class World {
 			   player.sprite = player.sprites[2];
 		   }
 
-		   //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		   batch.begin();
-		   batch.draw(player.sprite, player.position.x, player.position.y);
-		   batch.end();
+		   draw();
 		} 
 }
