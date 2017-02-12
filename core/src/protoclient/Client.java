@@ -24,7 +24,7 @@ public class Client {
 		this.udpConnection = new UDPConnection(this);
 		this.headerManager = new HeaderManager();
 		this.packManager = new PacketManager();
-		running = false;
+		running = true;
 	}
 	
 	public void send(OPacket oPack) {
@@ -107,11 +107,18 @@ public class Client {
 	}
 	
 	public void stop() {
-		tcpConnection.stop();
-		running = false;
+		if (tcpConnection != null) {
+			tcpConnection.stop();
+		}
+		if (udpConnection != null) {
+			udpConnection.stop();
+		}
 	}
 	
 	public boolean isRunning() {
-		return running;
+		if (tcpConnection != null) {
+			return !tcpConnection.isStopped();
+		}
+		return true;
 	}
 }

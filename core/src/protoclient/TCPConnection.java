@@ -53,8 +53,6 @@ public class TCPConnection implements Runnable
 				iPack.setData(ByteString.copyFrom(data));
 				if (!owner.getPacketManager().callHandler(iPack)){
 					System.err.println("Unrecognized key: " + iPack.getPKey());
-					socket.close();
-					return;
 				}
 			} catch (IOException e) {
 				if (!socket.isClosed() && socket.isConnected()) {
@@ -110,5 +108,12 @@ public class TCPConnection implements Runnable
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public boolean isStopped() {
+		if (socket != null) {
+			return socket.isClosed();
+		}
+		return true;
 	}
 }

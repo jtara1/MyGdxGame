@@ -59,8 +59,6 @@ public class UDPConnection implements Runnable
 				iPack.setData(ByteString.copyFrom(mainData));
 				if (!owner.getPacketManager().callHandler(iPack)){
 					System.err.println("Unrecognized key: " + iPack.getPKey());
-					socket.close();
-					return;
 				}
 			} catch (IOException e) {
 				ConnectionEventHandler conErrorHandler = owner.getConnectionErrorHandler();
