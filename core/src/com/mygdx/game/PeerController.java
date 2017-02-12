@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import gdxpacks.GdxPacks.PackB1;
+import jphys.CollisionManager;
 
 public class PeerController {
 	private Player player;
@@ -13,8 +14,8 @@ public class PeerController {
 	private int peerID;
 	private BitmapFont font;
 	
-	public PeerController(int id, String name, int heroID) {
-		player = new Player();
+	public PeerController(CollisionManager colManager, int id, String name, int heroID) {
+		player = new Player(colManager);
 		this.peerID = id;
 		this.name = name;
 	}

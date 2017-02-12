@@ -6,9 +6,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class Player {
+import jphys.Body;
+import jphys.CollisionManager;
+
+public class Player extends Body {
 	private Texture spritePage;
-	private int spriteSize = 64;
+	private static final int spriteSize = 64;
 	private Rectangle boundaries;
 	private String fileName;
 	
@@ -20,7 +23,9 @@ public class Player {
 	
 	public float distancePerFrame;
 	
-	public Player() {
+	public Player(CollisionManager collideManager)
+	{
+		super(collideManager, 500, 500, spriteSize, spriteSize/2);
 		fileName = "mage walking poses sheet copy.png";
 //		super(0, 0, (float)spriteSize, (float)spriteSize);
 		
@@ -42,7 +47,7 @@ public class Player {
 		if (sprite == null) {
 			sprite = sprites[2];
 		}
-		batch.draw(sprite, position.x, position.y);
+		batch.draw(sprite, getX(), getY());
 	}
 
 	public void initializeSprites() {
@@ -59,26 +64,27 @@ public class Player {
 	}
 	
 	public void move(int direction) {
-		float speedDivisor = 50f;
-		
+		float dX = 0;
+		float dY = 0;
 		switch(direction) {
 		case(World.DIRECTION_UP):
-			position.y += distancePerFrame;
+			dY = distancePerFrame;
 			sprite = sprites[0];
 			break;
 		case(World.DIRECTION_RIGHT):
-			position.x += distancePerFrame;
+			dX = distancePerFrame;
 			sprite = sprites[3];
 			break;
 		case(World.DIRECTION_DOWN):
-			position.y -= distancePerFrame;
+			dY = -distancePerFrame;
 			sprite = sprites[2];
 			break;
 		case(World.DIRECTION_LEFT):
-			position.x -= distancePerFrame;
+			dX = -distancePerFrame;
 			sprite = sprites[1];
 			break;
 		}
+		super.move(dX, dY);
 	}
 	
 	public boolean blockadeAhead(int direction, Rectangle blockade) {
