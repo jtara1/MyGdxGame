@@ -1,8 +1,11 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import gdxpacks.GdxPacks.PackB1;
+import jphys.CollisionManager;
 
 public class PeerController {
 	private Player player;
@@ -10,9 +13,11 @@ public class PeerController {
 	private float dY;
 	private String name;
 	private int peerID;
+	private float textXOff;
+	private BitmapFont font;
 	
-	public PeerController(int id, String name, int heroID) {
-		player = new Player();
+	public PeerController(CollisionManager colManager, int id, String name, int heroID) {
+		player = new Player(colManager);
 		this.peerID = id;
 		this.name = name;
 	}
@@ -25,8 +30,18 @@ public class PeerController {
 	}
 	
 	public void draw(SpriteBatch batch) {
-		//player.move(dX, dY);
-		batch.draw(player.sprite, player.position.x, player.position.y);
+		player.move(dX, dY);
+		if (font == null) {
+			font = new BitmapFont();
+			font.getData().setScale(1f);
+			font.setColor(1, 1, 1, .9f);
+			final GlyphLayout layout = new GlyphLayout(font, name);
+			// or for non final texts: layout.setText(font, text);
+
+			textXOff = layout.width / 2;
+		}
+		font.draw(batch, name, player.position.x + player.getBoundaries().width / 2 - textXOff, player.position.y + player.getBoundaries().height + 30);
+		player.draw(batch);
 	}
 	
 	public int getPeerID() {

@@ -11,6 +11,7 @@ public class TCPConnection implements Runnable
 {
 	private Client owner;
 	private Socket socket;
+	private boolean allowFail = false;
 	private InputStream inStream;
 	private OutputStream outStream;
 	public TCPConnection(Client owner) {
@@ -28,10 +29,13 @@ public class TCPConnection implements Runnable
 			inStream = socket.getInputStream();
 			outStream = socket.getOutputStream();
 		} catch (IOException e) {
+			allowFail = true;
 			ConnectionEventHandler conFailHandler = owner.getConnectionFailHandler();
+			e.printStackTrace();
 			if (conFailHandler != null) {
 				conFailHandler.run(e.getMessage());
 			}
+			
 			System.err.println(e.getMessage());
 			return;
 		}
@@ -43,6 +47,7 @@ public class TCPConnection implements Runnable
 		while (true) {
 			byte[] data = new byte[Client.HEADER_PACK_SIZE_BYTES];
 			try {
+				allowFail = true;
 				inStream.read(data, 0, Client.HEADER_PACK_SIZE_BYTES);
 				int headerSize = owner.getHeaderManager().parseHeaderSize(data);
 				data = new byte[headerSize];
@@ -55,6 +60,7 @@ public class TCPConnection implements Runnable
 					System.err.println("Unrecognized key: " + iPack.getPKey());
 				}
 			} catch (IOException e) {
+				e.printStackTrace();
 				if (!socket.isClosed() && socket.isConnected()) {
 					ConnectionEventHandler conErrorHandler = owner.getConnectionErrorHandler();
 					System.err.println("Recv error: " + e.getMessage());
@@ -91,6 +97,7 @@ public class TCPConnection implements Runnable
 		try {
 			outStream.write(owner.getHeaderManager().serialize(oPack).toByteArray());
 		} catch (IOException e) {
+			e.printStackTrace();
 			ConnectionEventHandler conErrorHandler = owner.getConnectionErrorHandler();
 			if (conErrorHandler != null) {
 				conErrorHandler.run("Send err: " + e.getMessage());
@@ -101,6 +108,7 @@ public class TCPConnection implements Runnable
 	
 	public void stop() {
 		if (socket != null) {
+			System.out.println("STOPPED CALLED");
 			try {
 				socket.close();
 			} catch (IOException e) {
@@ -111,7 +119,7 @@ public class TCPConnection implements Runnable
 	}
 	
 	public boolean isStopped() {
-		if (socket != null) {
+		if (allowFail && socket != null) {
 			return socket.isClosed();
 		}
 		return true;

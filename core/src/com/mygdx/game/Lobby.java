@@ -50,11 +50,13 @@ class LobbyConnectionCloseHandler implements ConnectionEventHandler{
 	
 	public LobbyConnectionCloseHandler(Client client) {
 		this.client = client;
+		
 	}
 	
 	@Override
 	public void run(String err) {
 		client.stop();
+		System.out.println(err);
 	}
 }
 
@@ -82,7 +84,7 @@ class PackA0Handler implements PacketHandler {
 			builderA1.setName(lobby.user.name);
 			builderA1.setHeroID(0);
 			OPacket oPack = new OPacket("A1", builderA1.build().toByteString());
-			oPack.addSendToID(OPacket.BROADCAST_ID);
+			oPack.addSendToID(pack.GetSenderID());
 			lobby.client.send(oPack);
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
@@ -108,6 +110,7 @@ class PackA1Handler implements PacketHandler {
 			LobbyMember peer = new LobbyMember(packA1.getName());
 			peer.heroID = packA1.getHeroID();
 			peer.peerID = pack.GetSenderID();
+			peer.inGame = packA1.getInGame();
 			lobby.lobbyMembers.add(peer);
 			lobby.setNumPeersRequired(lobby.getNumPeersRequired() - 1);
 			System.out.println("A1 received");
@@ -146,6 +149,28 @@ class PackA2Handler implements PacketHandler
 	}
 }
 
+class PackB0Handler implements PacketHandler {
+	private Lobby lobby;
+	
+	public PackB0Handler(Lobby lobby) {
+		this.lobby = lobby;
+	}
+
+	@Override
+	public boolean run(IPacket pack) {
+		Iterator <LobbyMember> iter = lobby.lobbyMembers.iterator();
+		while (iter.hasNext()) {
+			LobbyMember member = iter.next();
+			if (member.peerID == pack.GetSenderID()) {
+				member.inGame = true;
+				break;
+			}
+		}
+		return true;
+	}
+	
+}
+
 class PackZ9Handler implements PacketHandler {
 	private Lobby lobby;
 	
@@ -173,12 +198,21 @@ class LobbyMember {
 		this.name = name;
 		this.heroID = 0;
 		this.peerID = 0;
+		this.inGame = false;
 	}
 	public String name;
-	int heroID;
+	public int heroID;
 	public int peerID;
+	public boolean inGame;
 	
 	public void drawBackground(ShapeRenderer renderer, float x, float y, float w, float h) {
+		if (inGame) {
+			renderer.setColor(.2f, .9f, .2f, 1);
+		}
+		else
+		{
+			renderer.setColor(.8f, .8f, .8f, 1);
+		}
 		renderer.rect(x, y, w, h);
 	}
 	
@@ -241,6 +275,7 @@ public class Lobby implements PacketHandlerOwner
 		client.getPacketManager().addPacketHandler("A0", new PackA0Handler(this));
 		client.getPacketManager().addPacketHandler("A1", new PackA1Handler(this));
 		client.getPacketManager().addPacketHandler("A2", new PackA2Handler(this));
+		client.getPacketManager().addPacketHandler("B0", new PackB0Handler(this));
 		client.getPacketManager().addPacketHandler("Z9", new PackZ9Handler(this));
 	}
 
@@ -248,6 +283,7 @@ public class Lobby implements PacketHandlerOwner
 	public void removePacketHandlers() {
 		client.getPacketManager().removePacketHandler("A0");
 		client.getPacketManager().removePacketHandler("A1");
+		client.getPacketManager().removePacketHandler("B0");
 		client.getPacketManager().removePacketHandler("A2");
 		client.getPacketManager().removePacketHandler("Z9");
 	}
@@ -288,7 +324,9 @@ public class Lobby implements PacketHandlerOwner
 		createPacketHandlers();
 		client.addConnectionOpenHandler(new LobbyConnectionOpenHandler(this));
 		client.addConnectionCloseHandler(new LobbyConnectionCloseHandler(client));
-		client.run(address, port);
+		if (!client.run(address, port)) {
+			failed = true;
+		}
 	}
 	
 	private void initGraphics() {
@@ -340,7 +378,6 @@ public class Lobby implements PacketHandlerOwner
 	private void drawMemberBoxBackground() {
 		float y = SCREEN_H - MEMBER_BOX_OFF * 2 - TITLE_OFF - MEMBER_BOX_H;
 		Iterator<LobbyMember> iter = lobbyMembers.iterator();
-		renderer.setColor(.8f, .8f, .8f, 1);
 		while (iter.hasNext()) {
 			iter.next().drawBackground(renderer, SCREEN_W/2 + MEMBER_BOX_OFF * 2, 
 					y, SCREEN_W/2 - MEMBER_BOX_OFF * 4, MEMBER_BOX_H);

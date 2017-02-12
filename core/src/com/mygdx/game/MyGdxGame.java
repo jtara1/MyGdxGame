@@ -38,16 +38,16 @@ public class MyGdxGame extends ApplicationAdapter {
 	public Lobby lobby;
 	public MainMenu menu;
 	
-	public static GAME_STATE GameState = GAME_STATE.WORLD;
+	public static GAME_STATE GameState = GAME_STATE.MULTIPLAYER;
 	
 	@Override
 	public void create () {
-		
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 		playerSprite = new Texture("BODY_animation.png");
 		playerStance = new TextureRegion(playerSprite, 0, 0, 64, 64);
-		//world = new World("forest_preview.png");
+		if (GameState == GAME_STATE.WORLD)
+			world = new World("forest_preview.png");
 //		map = new TmxMapLoader(new ExternalFileHandleResolver()).load("map.tmx");
 		if (GameState == GAME_STATE.MULTIPLAYER) {
 			//lobby = new Lobby("127.0.0.1", 5000, new LobbyMember("what up"));
@@ -73,6 +73,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		case MULTIPLAYER:
 			if (world != null) {
 				world.draw();
+				if (world.isFinished()) {
+					world = null;
+					menu = new MainMenu();
+				}
 			}
 			else if (menu == null) {
 				lobby.draw();
@@ -84,7 +88,10 @@ public class MyGdxGame extends ApplicationAdapter {
 				else if (lobby.hasFinished()) {
 					ArrayList<UserInfo> peerInformation = new ArrayList<UserInfo>();
 					for (int i = 0; i < lobby.lobbyMembers.size(); i++) {
-						peerInformation.add(new UserInfo(lobby.lobbyMembers.get(i).name, lobby.lobbyMembers.get(i).heroID, lobby.lobbyMembers.get(i).peerID));
+						if (lobby.lobbyMembers.get(i).inGame) {
+							peerInformation.add(new UserInfo(lobby.lobbyMembers.get(i).name, lobby.lobbyMembers.get(i).heroID, 
+									lobby.lobbyMembers.get(i).peerID));
+						}
 					}
 					UserInfo userInfo = new UserInfo(lobby.user.name, lobby.user.heroID, lobby.user.peerID);
 					lobby.removeHandlers();

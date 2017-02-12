@@ -99,7 +99,7 @@ public class Client {
 		} catch (UnknownHostException e) {
 			//WOULD LIKE TO DISPLAY
 			System.err.println("Could not resolve the host " + host);
-			e.printStackTrace();
+			return false;
 		}
 		tcpThread = new Thread(tcpConnection);
 		tcpThread.start();

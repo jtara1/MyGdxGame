@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -15,10 +16,11 @@ import com.mygdx.game.MyGdxGame.GAME_STATE;
 
 import gdxpacks.GdxPacks.PackA0;
 import gdxpacks.GdxPacks.PackA1;
-import gdxpacks.GdxPacks.PackA2;
 import gdxpacks.GdxPacks.PackB0;
 import gdxpacks.GdxPacks.PackB1;
 import gdxpacks.GdxPacks.PackZ9;
+import jphys.Blocker;
+import jphys.CollisionManager;
 import protoclient.Client;
 import protoclient.IPacket;
 import protoclient.OPacket;
@@ -35,12 +37,12 @@ class PackA0WorldHandler implements PacketHandler {
 
 	@Override
 	public boolean run(IPacket pack) {
-		PackA0 packA0 = null;
 		PackA1.Builder builderA1 = PackA1.newBuilder();
 		builderA1.setName(world.userInfo.name);
 		builderA1.setHeroID(world.userInfo.heroID);
+		builderA1.setInGame(true);
 		OPacket oPack = new OPacket("A1", builderA1.build().toByteString());
-		oPack.addSendToID(OPacket.BROADCAST_ID);
+		oPack.addSendToID(pack.GetSenderID());
 		world.client.send(oPack);
 		return true;
 	}
@@ -58,7 +60,7 @@ class PackB0WorldHandler implements PacketHandler {
 		PackB0 packB0;
 		try {
 			packB0 = PackB0.parseFrom(pack.getData());
-			world.peerControllers.add(new PeerController(pack.GetSenderID(), packB0.getName(), packB0.getHeroID()));
+			world.peerControllers.add(new PeerController(world.collisionManager, pack.GetSenderID(), packB0.getName(), packB0.getHeroID()));
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 		}
@@ -83,17 +85,13 @@ class PackB1WorldHandler implements PacketHandler {
 				if (world.peerControllers.get(i).getPeerID() == pack.GetSenderID())
 				{
 					world.peerControllers.get(i).update(packB1);
-					System.out.println("HI");
 				}
 			}
-			System.out.println("dog");
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
-	
-	
 }
 
 class PackZ9WorldHandler implements PacketHandler {
@@ -127,9 +125,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public static final int DIRECTION_LEFT = 3;
 	public static final int DIRECTION_NONE = -1;
 	
-	public Client client;
-	
-	public UserInfo userInfo;
+	public CollisionManager collisionManager;
 	
 	public Texture background;
 	
@@ -139,7 +135,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	
 	public Player player;
 	
-	public ArrayList<NoWalkZone> noWalkZones;
+	public ArrayList<Blocker> noWalkZones;
 	
 	public ArrayList<Monster> monsters;
 	
@@ -149,13 +145,49 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	
 	public OrthographicCamera camera;
 	
+	public Client client;
+	
+	public UserInfo userInfo;
+	
+	public World(String fileName) {
+		collisionManager = new CollisionManager();
+		// image of World background loaded as a Texture
+		background = new Texture(fileName);
+		
+		// used to draw each Texture
+		batch = new SpriteBatch();
+		
+		// back default boundaries the size of the background image
+		boundaries = new Rectangle(0, 0, background.getWidth(), background.getHeight());
+		
+		player = new Player(collisionManager);
+		
+		noWalkZones = new ArrayList<Blocker>();
+		monsters = new ArrayList<Monster>();
+		
+		createNoWalkZones();
+		setMonsters();
+
+		input = new InputHandler();
+		
+		float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        
+        //Creates a new camera, sets its position focused on the player, and zooms out
+        camera = new OrthographicCamera(30, 30 * (h / w));
+        camera.position.set(player.position.x,player.position.y,0);
+        camera.zoom += 20;
+        camera.update();
+	}
+	
 	public World(Client client, UserInfo userInfo, ArrayList<UserInfo> peers, String fileName) {
+		collisionManager = new CollisionManager();
 		this.userInfo = userInfo;
 		this.client = client;
 		peerControllers = new ArrayList<PeerController>();
 		
 		for (int i = 0; i < peers.size(); i++) {
-			peerControllers.add(new PeerController(peers.get(i).peerID, peers.get(i).name, peers.get(i).heroID));
+			peerControllers.add(new PeerController(collisionManager, peers.get(i).peerID, peers.get(i).name, peers.get(i).heroID));
 		}
 		
 		createPacketHandlers();
@@ -176,9 +208,9 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		// back default boundaries the size of the background image
 		boundaries = new Rectangle(0, 0, background.getWidth(), background.getHeight());
 		
-		player = new Player();
+		player = new Player(collisionManager);
 		
-		noWalkZones = new ArrayList<NoWalkZone>();
+		noWalkZones = new ArrayList<Blocker>();
 		monsters = new ArrayList<Monster>();
 		
 		createNoWalkZones();
@@ -230,8 +262,11 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		}
 	}
 	public void createNoWalkZones() {
-		NoWalkZone zone1 = new NoWalkZone(335, 149, 130, 140);
-		noWalkZones.add(zone1);
+		collisionManager.addBlocker(new Blocker(340, 150, 70, 134));
+		collisionManager.addBlocker(new Blocker(412, 152, 54, 65));
+		collisionManager.addBlocker(new Blocker(475, 309, 125, 71));
+		collisionManager.addBlocker(new Blocker(532, 214, 70, 95));
+		//noWalkZones.add(zone1);
 	}
 	
 	public void draw() {
@@ -239,6 +274,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	        
 		batch.begin();
 		batch.draw(background, 0, 0);
+		player.draw(batch);
 		
 		int offset = 10;
 		int[] sidesBlocked = playerCollidedWithNoWalkZone();
@@ -251,66 +287,69 @@ public class World implements PacketHandlerOwner, InputProcessor {
 			if (sidesBlocked[3] == DIRECTION_NONE) {
 //				player.move(-player.speed * Gdx.graphics.getDeltaTime(), 0);
 				player.move(DIRECTION_LEFT);
-				camera.translate(-Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
+				//camera.translate(-Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 			} else {
 				player.position.x += Gdx.graphics.getDeltaTime() * player.speed * 2;
-				camera.translate(Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
+				//camera.translate(Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
 			}
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) {
 			if (sidesBlocked[1] == DIRECTION_NONE) {
 //				player.move(player.speed * Gdx.graphics.getDeltaTime(), 0);
 				player.move(DIRECTION_RIGHT);
-				camera.translate(Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
+				//camera.translate(Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 			} else {
 				player.position.x -= Gdx.graphics.getDeltaTime() * player.speed * 2;
-				camera.translate(-Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
+				//camera.translate(-Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
 			}
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) {
 			if (sidesBlocked[0] == DIRECTION_NONE) {
 				player.move(DIRECTION_UP);
 //				player.move(0, player.speed * Gdx.graphics.getDeltaTime());
-				camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed, 0);
+				//camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed, 0);
 			} else {
 				player.position.y -= Gdx.graphics.getDeltaTime() * player.speed * 2;
-				camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
+				//camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
 			}
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) {
 			if (sidesBlocked[2] == DIRECTION_NONE) {
 //				player.move(0, -player.speed * Gdx.graphics.getDeltaTime());
 				player.move(DIRECTION_DOWN);
-				camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed, 0);
+				//camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed, 0);
 			} else {
 				player.position.y += Gdx.graphics.getDeltaTime() * player.speed * 2;
-				camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
+				//camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
 			}
 		}
-		camera.position.set(player.position, 0);
+		camera.position.set(player.getX(), player.getY(), 0);
 		camera.update();
 			   
 //		System.out.println("Player position: " + player.position);
 //		playerCollidedWithNoWalkZone();
 		
-		batch.draw(player.sprite, player.position.x, player.position.y);
 		drawMonsters();
 		checkMonsterCollision();
-		for (int i = 0; i < peerControllers.size(); i++) {
-			peerControllers.get(i).draw(batch);
+		if (MyGdxGame.GameState == GAME_STATE.MULTIPLAYER) {
+			for (int i = 0; i < peerControllers.size(); i++) {
+				peerControllers.get(i).draw(batch);
+			}
 		}
 //		input.move(player, camera);
 		batch.end();
-		if (peerControllers.size() > 0) {
-			PackB1.Builder packB1Builder = PackB1.newBuilder();
-			packB1Builder.setX(player.position.x);
-			packB1Builder.setY(player.position.y);
-			OPacket oPack = new OPacket("B1", packB1Builder.build().toByteString());
-			oPack.setReliable(false);
-			for (int i = 0; i < peerControllers.size(); i++) {
-				oPack.addSendToID(peerControllers.get(i).getPeerID());
+		if (MyGdxGame.GameState == GAME_STATE.MULTIPLAYER) {
+			if (peerControllers.size() > 0) {
+				PackB1.Builder packB1Builder = PackB1.newBuilder();
+				packB1Builder.setX(player.position.x);
+				packB1Builder.setY(player.position.y);
+				OPacket oPack = new OPacket("B1", packB1Builder.build().toByteString());
+				oPack.setReliable(false);
+				for (int i = 0; i < peerControllers.size(); i++) {
+					oPack.addSendToID(peerControllers.get(i).getPeerID());
+				}
+				client.send(oPack);
 			}
-			client.send(oPack);
 		}
 	}
 	
@@ -323,21 +362,21 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	 */
 	public int[] playerCollidedWithNoWalkZone() {
 		int[] allSidesClear = {DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE};
-		
-		for (NoWalkZone zone : noWalkZones) {
+		/*
+		for (Rectangle zone : noWalkZones) {
 			//System.out.println("working");
 			int[] sidesBlocked = allSidesClear;
 			
-			if (player.blockadeAbove(zone.boundaries)) {
+			if (player.blockadeAbove(zone)) {
 				sidesBlocked[0] = 1;
 			} 
-			if (player.blockadeRight(zone.boundaries)) {
+			if (player.blockadeRight(zone)) {
 				sidesBlocked[1] = 1;
 			} 
-			if (player.blockadeBelow(zone.boundaries)) {
+			if (player.blockadeBelow(zone)) {
 				sidesBlocked[2] = 1;
 			} 
-			if (player.blockadeLeft(zone.boundaries)){
+			if (player.blockadeLeft(zone)){
 				sidesBlocked[3] = 1;
 			}
 
@@ -345,6 +384,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 				return sidesBlocked;
 			}
 		}
+		*/
 		return allSidesClear;
 	}
 	
@@ -355,41 +395,52 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public void dispose() {
 		background.dispose();
 	}
+
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO Auto-generated method stub
+		switch(keycode) {
+		
+		}
 		return false;
 	}
+
 	@Override
 	public boolean keyUp(int keycode) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean keyTyped(char character) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
@@ -406,5 +457,9 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public void removePacketHandlers() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public boolean isFinished() {
+		return !client.isRunning();
 	}
 }
