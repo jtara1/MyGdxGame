@@ -31,6 +31,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	public World world;
 	public Lobby lobby;
+	public MainMenu menu;
 	
 	public static GAME_STATE GameState = GAME_STATE.WORLD;
 	
@@ -43,8 +44,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		world = new World("forest_preview.png");
 //		map = new TmxMapLoader(new ExternalFileHandleResolver()).load("map.tmx");
 		if (GameState == GAME_STATE.MULTIPLAYER) {
-			lobby = new Lobby("127.0.0.1", 5000, new LobbyMember("dat boi"));
+			lobby = new Lobby("127.0.0.1", 5000, new LobbyMember("what up"));
 		}
+		menu = new MainMenu();
 	}
 
 	@Override
@@ -61,8 +63,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		case COMBAT:
 			break;
 		case MULTIPLAYER:
+			menu.draw();
 			break;
 		}
+		
 		
 //		batch.begin();
 //		batch.draw(img, 0, 0);
