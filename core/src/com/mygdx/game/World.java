@@ -88,6 +88,7 @@ public class World {
 				player.position.x += offset;
 			}
 			player.sprite = player.sprites[1];
+			camera.translate(-Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) {
 			if (sidesBlocked[1] == DIRECTION_NONE) {
@@ -96,6 +97,7 @@ public class World {
 				player.position.x -= offset;
 			}
 			player.sprite = player.sprites[3];
+			camera.translate(Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) {
 			if (sidesBlocked[0] == DIRECTION_NONE) {
@@ -104,6 +106,7 @@ public class World {
 				player.position.y -= offset;
 			}
 			player.sprite = player.sprites[0];
+			camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed, 0);
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) {
 			if (sidesBlocked[2] == DIRECTION_NONE) {
@@ -112,6 +115,7 @@ public class World {
 				player.position.y += offset;
 			}
 			player.sprite = player.sprites[2];
+			camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed, 0);
 		}
 			   
 //		System.out.println("Player position: " + player.position);
