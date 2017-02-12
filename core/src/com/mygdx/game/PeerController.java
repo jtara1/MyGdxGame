@@ -33,7 +33,7 @@ public class PeerController {
 			font.getData().setScale(1f);
 			font.setColor(1, 1, 1, .9f);
 		}
-		font.draw(batch, name, player.position.x, player.position.y + player.getBoundaries().height + 30);
+		font.draw(batch, name, player.position.x + player.getBoundaries().width / 2, player.position.y + player.getBoundaries().height + 30);
 		player.draw(batch);
 	}
 	

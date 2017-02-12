@@ -29,9 +29,11 @@ public class TCPConnection implements Runnable
 			outStream = socket.getOutputStream();
 		} catch (IOException e) {
 			ConnectionEventHandler conFailHandler = owner.getConnectionFailHandler();
+			e.printStackTrace();
 			if (conFailHandler != null) {
 				conFailHandler.run(e.getMessage());
 			}
+			
 			System.err.println(e.getMessage());
 			return;
 		}
@@ -55,6 +57,7 @@ public class TCPConnection implements Runnable
 					System.err.println("Unrecognized key: " + iPack.getPKey());
 				}
 			} catch (IOException e) {
+				e.printStackTrace();
 				if (!socket.isClosed() && socket.isConnected()) {
 					ConnectionEventHandler conErrorHandler = owner.getConnectionErrorHandler();
 					System.err.println("Recv error: " + e.getMessage());

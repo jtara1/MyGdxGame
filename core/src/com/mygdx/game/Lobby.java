@@ -50,11 +50,13 @@ class LobbyConnectionCloseHandler implements ConnectionEventHandler{
 	
 	public LobbyConnectionCloseHandler(Client client) {
 		this.client = client;
+		
 	}
 	
 	@Override
 	public void run(String err) {
 		client.stop();
+		System.out.println(err);
 	}
 }
 
