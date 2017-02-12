@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import gdxpacks.GdxPacks.PackB1;
@@ -10,6 +11,7 @@ public class PeerController {
 	private float dY;
 	private String name;
 	private int peerID;
+	private BitmapFont font;
 	
 	public PeerController(int id, String name, int heroID) {
 		player = new Player();
@@ -25,7 +27,7 @@ public class PeerController {
 	}
 	
 	public void draw(SpriteBatch batch) {
-		//player.move(dX, dY);
+		player.move(dX, dY);
 		batch.draw(player.sprite, player.position.x, player.position.y);
 	}
 	

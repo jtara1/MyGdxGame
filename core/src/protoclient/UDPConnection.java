@@ -73,7 +73,7 @@ public class UDPConnection implements Runnable
 	}
 	
 	public boolean send(OPacket oPack) {
-		System.out.println("Sent called");
+		//System.out.println("Sent called");
 		try {
 			byte[] data = owner.getHeaderManager().serialize(oPack).toByteArray();
 			DatagramPacket packet = new DatagramPacket(data, data.length, owner.getServerAddress(), owner.getPort());

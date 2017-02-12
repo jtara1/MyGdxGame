@@ -84,7 +84,10 @@ public class MyGdxGame extends ApplicationAdapter {
 				else if (lobby.hasFinished()) {
 					ArrayList<UserInfo> peerInformation = new ArrayList<UserInfo>();
 					for (int i = 0; i < lobby.lobbyMembers.size(); i++) {
-						peerInformation.add(new UserInfo(lobby.lobbyMembers.get(i).name, lobby.lobbyMembers.get(i).heroID, lobby.lobbyMembers.get(i).peerID));
+						if (lobby.lobbyMembers.get(i).inGame) {
+							peerInformation.add(new UserInfo(lobby.lobbyMembers.get(i).name, lobby.lobbyMembers.get(i).heroID, 
+									lobby.lobbyMembers.get(i).peerID));
+						}
 					}
 					UserInfo userInfo = new UserInfo(lobby.user.name, lobby.user.heroID, lobby.user.peerID);
 					lobby.removeHandlers();

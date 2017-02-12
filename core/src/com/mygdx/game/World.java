@@ -83,10 +83,8 @@ class PackB1WorldHandler implements PacketHandler {
 				if (world.peerControllers.get(i).getPeerID() == pack.GetSenderID())
 				{
 					world.peerControllers.get(i).update(packB1);
-					System.out.println("HI");
 				}
 			}
-			System.out.println("dog");
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 		}
