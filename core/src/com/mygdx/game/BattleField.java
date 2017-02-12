@@ -2,23 +2,11 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BattleField {
 	
@@ -46,7 +34,7 @@ public class BattleField {
 		
 		monster1=new Monster(new Vector2(100,100));
 		player=new BattlePlayer(new Vector2(425,250));
-		ac=new ActionController(batch);
+		ac=new ActionController();
 		ar=new ActionReceiver();
 		// image of World background loaded as a Texture
 		background = new Texture("BattleField/Sky.jpg");
@@ -74,31 +62,28 @@ public class BattleField {
 	}
 	
 	public void draw() {
-	        
-		batch.begin();
-		batch.draw(background, 0, 0, 750, 500);
-		
 		boolean isActioning=ac.update();
-		if(isActioning)
-			System.out.println("A");
-		else
+	   
+		batch.begin();
+
+		batch.draw(background, 0, 0, 750, 500);
+		if(!isActioning)
 		{
 			drawActionMenu();
-			System.out.println("C");
 			Gdx.input.setInputProcessor(new ActionInputProcessor(player, monster1, ar));
 			if(ar.hasReceived())
 			{
 				ac.loadNewAction(ar);
-				System.out.println("B");
 			}
 		}
-		
-
 		batch.draw(monster1.curSprite, monster1.getLocation().x,monster1.getLocation().y);
 		batch.draw(player.curSprite, player.getLocation().x,player.getLocation().y);
 		
 		
+		
 		batch.end();
+		
+		
 	}
 	
 	public void drawActionMenu() {
@@ -114,7 +99,6 @@ public class BattleField {
 		
 		batch.draw(masterHpMpBar, 40, 50, 100, 30);
 		batch.draw(playerHpMpBar, 350, 400, 100, 30);
-		batch.end();
 	}
 	
 

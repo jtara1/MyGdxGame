@@ -81,7 +81,7 @@ public class ActionInputProcessor implements InputProcessor {
 		int y= Gdx.graphics.getHeight()-last_y;
 		System.out.println(x);
 		System.out.println(y);
-		if(x>=500&&x<=600&&y>=140&&y<=190)
+		if(x>=500&&x<=600&&y>=320&&y<=370)
 			return "basicAttack";
 		else 
 			return null;
