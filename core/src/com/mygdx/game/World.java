@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -125,10 +126,6 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public static final int DIRECTION_LEFT = 3;
 	public static final int DIRECTION_NONE = -1;
 	
-	public Client client;
-	
-	public UserInfo userInfo;
-	
 	public Texture background;
 	
 	public Rectangle boundaries;
@@ -137,7 +134,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	
 	public Player player;
 	
-	public ArrayList<NoWalkZone> noWalkZones;
+	public ArrayList<Rectangle> noWalkZones;
 	
 	public ArrayList<Monster> monsters;
 	
@@ -146,6 +143,10 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public InputHandler input;
 	
 	public OrthographicCamera camera;
+	
+	public Client client;
+	
+	public UserInfo userInfo;
 	
 	public World(Client client, UserInfo userInfo, ArrayList<UserInfo> peers, String fileName) {
 		this.userInfo = userInfo;
@@ -176,7 +177,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		
 		player = new Player();
 		
-		noWalkZones = new ArrayList<NoWalkZone>();
+		noWalkZones = new ArrayList<Rectangle>();
 		monsters = new ArrayList<Monster>();
 		
 		createNoWalkZones();
@@ -228,7 +229,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		}
 	}
 	public void createNoWalkZones() {
-		NoWalkZone zone1 = new NoWalkZone(335, 149, 130, 140);
+		Rectangle zone1 = new Rectangle(335, 149, 130, 140);
 		noWalkZones.add(zone1);
 	}
 	
@@ -245,7 +246,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 //			System.out.print(sidesBlocked[i] + " ");
 //		} System.out.println();
 		
-		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
+		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT) && !player.blockadeAhead(DIRECTION_LEFT, noWalkZones.get(0))) {
 			if (sidesBlocked[3] == DIRECTION_NONE) {
 //				player.move(-player.speed * Gdx.graphics.getDeltaTime(), 0);
 				player.move(DIRECTION_LEFT);
@@ -287,6 +288,8 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		}
 		camera.position.set(player.position, 0);
 		camera.update();
+		
+		player.draw();
 			   
 //		System.out.println("Player position: " + player.position);
 //		playerCollidedWithNoWalkZone();
@@ -322,20 +325,20 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public int[] playerCollidedWithNoWalkZone() {
 		int[] allSidesClear = {DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE};
 		
-		for (NoWalkZone zone : noWalkZones) {
+		for (Rectangle zone : noWalkZones) {
 			//System.out.println("working");
 			int[] sidesBlocked = allSidesClear;
 			
-			if (player.blockadeAbove(zone.boundaries)) {
+			if (player.blockadeAbove(zone)) {
 				sidesBlocked[0] = 1;
 			} 
-			if (player.blockadeRight(zone.boundaries)) {
+			if (player.blockadeRight(zone)) {
 				sidesBlocked[1] = 1;
 			} 
-			if (player.blockadeBelow(zone.boundaries)) {
+			if (player.blockadeBelow(zone)) {
 				sidesBlocked[2] = 1;
 			} 
-			if (player.blockadeLeft(zone.boundaries)){
+			if (player.blockadeLeft(zone)){
 				sidesBlocked[3] = 1;
 			}
 
@@ -353,41 +356,52 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public void dispose() {
 		background.dispose();
 	}
+
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO Auto-generated method stub
+		switch(keycode) {
+		
+		}
 		return false;
 	}
+
 	@Override
 	public boolean keyUp(int keycode) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean keyTyped(char character) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub

@@ -23,6 +23,9 @@ public class ActionController {
 	
 	public ActionController()
 	{
+//		this.batch=batch;
+		batch = new SpriteBatch();
+//		fireball=new Texture(Gdx.files.internal("Magic/Fireball1_GD_BlueKPL.png"));
 	}
 	
 	/**
