@@ -11,6 +11,7 @@ public class TCPConnection implements Runnable
 {
 	private Client owner;
 	private Socket socket;
+	private boolean allowFail = false;
 	private InputStream inStream;
 	private OutputStream outStream;
 	public TCPConnection(Client owner) {
@@ -28,6 +29,7 @@ public class TCPConnection implements Runnable
 			inStream = socket.getInputStream();
 			outStream = socket.getOutputStream();
 		} catch (IOException e) {
+			allowFail = true;
 			ConnectionEventHandler conFailHandler = owner.getConnectionFailHandler();
 			e.printStackTrace();
 			if (conFailHandler != null) {
@@ -45,6 +47,7 @@ public class TCPConnection implements Runnable
 		while (true) {
 			byte[] data = new byte[Client.HEADER_PACK_SIZE_BYTES];
 			try {
+				allowFail = true;
 				inStream.read(data, 0, Client.HEADER_PACK_SIZE_BYTES);
 				int headerSize = owner.getHeaderManager().parseHeaderSize(data);
 				data = new byte[headerSize];
@@ -116,7 +119,7 @@ public class TCPConnection implements Runnable
 	}
 	
 	public boolean isStopped() {
-		if (socket != null) {
+		if (allowFail && socket != null) {
 			return socket.isClosed();
 		}
 		return true;
