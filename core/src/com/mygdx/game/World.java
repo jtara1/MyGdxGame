@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -117,7 +118,7 @@ class PackZ9WorldHandler implements PacketHandler {
 	}
 }
 
-public class World implements PacketHandlerOwner {
+public class World implements PacketHandlerOwner, InputProcessor {
 	public final int DIRECTION_UP = 0;
 	public final int DIRECTION_RIGHT = 1;
 	public final int DIRECTION_DOWN = 2;
@@ -217,12 +218,12 @@ public class World implements PacketHandlerOwner {
 	}
 	public void drawMonsters() {
 		for(int i = 0; i < monsters.size(); i++)
-			batch.draw(monsters.get(i).standingSprite, monsters.get(i).location.x, monsters.get(i).location.y);
+			batch.draw(monsters.get(i).curSprite, monsters.get(i).getLocation().x, monsters.get(i).getLocation().y);
 	}
 	public void checkMonsterCollision(){
 		for(int i = 0; i < monsters.size(); i++){
-			if(Math.abs(monsters.get(i).location.x - player.position.x) <= 15 &&
-					Math.abs(monsters.get(i).location.y - player.position.y) <= 15)
+			if(Math.abs(monsters.get(i).getLocation().x - player.position.x) <= 15 &&
+					Math.abs(monsters.get(i).getLocation().y - player.position.y) <= 15)
 				MyGdxGame.GameState = GAME_STATE.COMBAT;
 		}
 	}
@@ -246,44 +247,45 @@ public class World implements PacketHandlerOwner {
 		
 		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
 			if (sidesBlocked[3] == DIRECTION_NONE) {
-				player.position.x -= Gdx.graphics.getDeltaTime() * player.speed;
+//				player.move(-player.speed * Gdx.graphics.getDeltaTime(), 0);
+				player.move(DIRECTION_LEFT);
 				camera.translate(-Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 			} else {
 				player.position.x += Gdx.graphics.getDeltaTime() * player.speed * 2;
 				camera.translate(Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
 			}
-			player.sprite = player.sprites[1];
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) {
 			if (sidesBlocked[1] == DIRECTION_NONE) {
-				player.position.x += Gdx.graphics.getDeltaTime() * player.speed;
+//				player.move(player.speed * Gdx.graphics.getDeltaTime(), 0);
+				player.move(DIRECTION_RIGHT);
 				camera.translate(Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 			} else {
 				player.position.x -= Gdx.graphics.getDeltaTime() * player.speed * 2;
 				camera.translate(-Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
 			}
-			player.sprite = player.sprites[3];
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) {
 			if (sidesBlocked[0] == DIRECTION_NONE) {
-				player.position.y += Gdx.graphics.getDeltaTime() * player.speed;
+				player.move(DIRECTION_UP);
+//				player.move(0, player.speed * Gdx.graphics.getDeltaTime());
 				camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed, 0);
 			} else {
 				player.position.y -= Gdx.graphics.getDeltaTime() * player.speed * 2;
 				camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
 			}
-			player.sprite = player.sprites[0];
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) {
 			if (sidesBlocked[2] == DIRECTION_NONE) {
-				player.position.y -= Gdx.graphics.getDeltaTime() * player.speed;
+//				player.move(0, -player.speed * Gdx.graphics.getDeltaTime());
+				player.move(DIRECTION_DOWN);
 				camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed, 0);
 			} else {
 				player.position.y += Gdx.graphics.getDeltaTime() * player.speed * 2;
 				camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
 			}
-			player.sprite = player.sprites[2];
 		}
+		camera.position.set(player.position, 0);
 		camera.update();
 			   
 //		System.out.println("Player position: " + player.position);
@@ -346,18 +348,6 @@ public class World implements PacketHandlerOwner {
 	public void dispose() {
 		background.dispose();
 	}
-
-	@Override
-	public void createPacketHandlers() {
-		client.getPacketManager().addPacketHandler("A0", new PackA0WorldHandler(this));
-		client.getPacketManager().addPacketHandler("Z9", new PackZ9WorldHandler(this));
-		client.getPacketManager().addPacketHandler("B0", new PackB0WorldHandler(this));
-		client.getPacketManager().addPacketHandler("B1", new PackB1WorldHandler(this));
-	}
-
-	@Override
-	public void removePacketHandlers() {
-		// TODO Auto-generated method stub
-		
-	}
+==== BASE ====
+==== BASE ====
 }

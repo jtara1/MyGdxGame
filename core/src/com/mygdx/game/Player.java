@@ -40,6 +40,33 @@ public class Player {
 //		boundaries = new Rectangle(position.x, position.y, spriteSize, spriteSize);
 	}
 	
+	public void move(int direction) {
+		float speedDivisor = 50f;
+		
+		switch(direction) {
+		case(World.DIRECTION_UP):
+			position.y += speed / speedDivisor;
+			sprite = sprites[0];
+			break;
+		case(World.DIRECTION_RIGHT):
+			position.x += speed / speedDivisor;
+			sprite = sprites[3];
+			break;
+		case(World.DIRECTION_DOWN):
+			position.y -= speed / speedDivisor;
+			sprite = sprites[2];
+			break;
+		case(World.DIRECTION_LEFT):
+			position.x -= speed / speedDivisor;
+			sprite = sprites[1];
+			break;
+		}
+	}
+	
+	public void move(float deltaX, float deltaY) {
+		this.position.add(new Vector2(deltaX, deltaY));
+	}
+	
 	public Rectangle getBoundaries() {
 		return new Rectangle(position.x, position.y, spriteSize, spriteSize);
 	}
