@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,6 +28,8 @@ public class World {
 	public ArrayList<NoWalkZone> noWalkZones;
 
 	public InputHandler input;
+	
+	public OrthographicCamera camera;
 	
 	public World(String fileName) {
 		
@@ -160,5 +164,4 @@ public class World {
 	public void dispose() {
 		background.dispose();
 	}
-	
 }
