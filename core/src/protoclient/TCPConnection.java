@@ -87,7 +87,7 @@ public class TCPConnection implements Runnable
 	}
 	
 	public boolean send(OPacket oPack) {
-		System.out.println("Sent called");
+		//System.out.println("Sent called");
 		try {
 			outStream.write(owner.getHeaderManager().serialize(oPack).toByteArray());
 		} catch (IOException e) {

@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.MyGdxGame.GAME_STATE;
 
 public class BattleTest extends ApplicationAdapter {
+	/*
 	SpriteBatch batch;
 	BattleAgent monster1,player;
 
@@ -50,4 +51,5 @@ public class BattleTest extends ApplicationAdapter {
 		batch.end();
 	
 	}
+	*/
 }

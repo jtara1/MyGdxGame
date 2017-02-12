@@ -7,18 +7,126 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.mygdx.game.MyGdxGame.GAME_STATE;
 
-public class World {
+import gdxpacks.GdxPacks.PackA0;
+import gdxpacks.GdxPacks.PackA1;
+import gdxpacks.GdxPacks.PackA2;
+import gdxpacks.GdxPacks.PackB0;
+import gdxpacks.GdxPacks.PackB1;
+import gdxpacks.GdxPacks.PackZ9;
+import protoclient.Client;
+import protoclient.IPacket;
+import protoclient.OPacket;
+import protoclient.PacketHandler;
+import protoclient.PacketHandlerOwner;
+
+class PackA0WorldHandler implements PacketHandler {
+	private World world;
+	
+	public PackA0WorldHandler(World world) 
+	{
+		this.world = world;
+	}
+
+	@Override
+	public boolean run(IPacket pack) {
+		PackA0 packA0 = null;
+		PackA1.Builder builderA1 = PackA1.newBuilder();
+		builderA1.setName(world.userInfo.name);
+		builderA1.setHeroID(world.userInfo.heroID);
+		OPacket oPack = new OPacket("A1", builderA1.build().toByteString());
+		oPack.addSendToID(OPacket.BROADCAST_ID);
+		world.client.send(oPack);
+		return true;
+	}
+}
+
+class PackB0WorldHandler implements PacketHandler {
+	private World world;
+	
+	PackB0WorldHandler(World world) {
+		this.world = world;
+	}
+
+	@Override
+	public boolean run(IPacket pack) {
+		PackB0 packB0;
+		try {
+			packB0 = PackB0.parseFrom(pack.getData());
+			world.peerControllers.add(new PeerController(pack.GetSenderID(), packB0.getName(), packB0.getHeroID()));
+		} catch (InvalidProtocolBufferException e) {
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
+}
+
+class PackB1WorldHandler implements PacketHandler {
+	private World world;
+	
+	PackB1WorldHandler(World world) {
+		this.world = world;
+	}
+
+	@Override
+	public boolean run(IPacket pack) {
+		PackB1 packB1;
+		try {
+			packB1 = PackB1.parseFrom(pack.getData());
+			for (int i = 0; i < world.peerControllers.size(); i++) {
+				if (world.peerControllers.get(i).getPeerID() == pack.GetSenderID())
+				{
+					world.peerControllers.get(i).update(packB1);
+				}
+			}
+		} catch (InvalidProtocolBufferException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
+}
+
+class PackZ9WorldHandler implements PacketHandler {
+	private World world;
+	
+	PackZ9WorldHandler(World world) {
+		this.world = world;
+	}
+
+	@Override
+	public boolean run(IPacket pack) {
+		PackZ9 packZ9;
+		try {
+			packZ9 = PackZ9.parseFrom(pack.getData());
+			for (int i = 0; i < world.peerControllers.size(); i++) {
+				if (world.peerControllers.get(i).getPeerID() == packZ9.getId()) {
+					world.peerControllers.remove(i);
+				}
+			}
+		} catch (InvalidProtocolBufferException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+}
+
+public class World implements PacketHandlerOwner {
 	public final int DIRECTION_UP = 0;
 	public final int DIRECTION_RIGHT = 1;
 	public final int DIRECTION_DOWN = 2;
 	public final int DIRECTION_LEFT = 3;
 	public final int DIRECTION_NONE = -1;
+	
+	public Client client;
+	
+	public UserInfo userInfo;
 	
 	public Texture background;
 	
@@ -31,12 +139,30 @@ public class World {
 	public ArrayList<NoWalkZone> noWalkZones;
 	
 	public ArrayList<Monster> monsters;
+	
+	public ArrayList<PeerController> peerControllers;
 
 	public InputHandler input;
 	
 	public OrthographicCamera camera;
 	
-	public World(String fileName) {
+	public World(Client client, UserInfo userInfo, ArrayList<UserInfo> peers, String fileName) {
+		this.userInfo = userInfo;
+		this.client = client;
+		peerControllers = new ArrayList<PeerController>();
+		
+		for (int i = 0; i < peers.size(); i++) {
+			peerControllers.add(new PeerController(peers.get(i).peerID, peers.get(i).name, peers.get(i).heroID));
+		}
+		
+		createPacketHandlers();
+		
+		PackB0.Builder packB0Builder = PackB0.newBuilder();
+		packB0Builder.setName(userInfo.name);
+		packB0Builder.setHeroID(userInfo.heroID);
+		OPacket oPack = new OPacket("B0", packB0Builder.build().toByteString());
+		oPack.addSendToID(65535);
+		client.send(oPack);
 		
 		// image of World background loaded as a Texture
 		background = new Texture(fileName);
@@ -66,11 +192,12 @@ public class World {
         camera.zoom += 20;
         camera.update();
 	}
-	
-	public World(String fileName, float width, float height) {
-		this(fileName);
+	/*
+	public World(UserInfo userInfo, ArrayList<UserInfo> peers, String fileName, float width, float height) {
+		this(userInfo, peers, fileName);
 		boundaries = new Rectangle(0, 0, width, height);
 	}
+	*/
 	public void setMonsters() {
 		Vector2 pos1 = new Vector2(200,200);
 		Monster mons1 = new Monster(pos1);
@@ -165,9 +292,17 @@ public class World {
 		batch.draw(player.sprite, player.position.x, player.position.y);
 		drawMonsters();
 		checkMonsterCollision();
-		
+		for (int i = 0; i < peerControllers.size(); i++) {
+			peerControllers.get(i).draw(batch);
+		}
 //		input.move(player, camera);
 		batch.end();
+		PackB1.Builder packB1Builder = PackB1.newBuilder();
+		packB1Builder.setX(player.position.x);
+		packB1Builder.setY(player.position.y);
+		OPacket oPack = new OPacket("B1", packB1Builder.build().toByteString());
+		oPack.addSendToID(65535);
+		client.send(oPack);
 	}
 	
 	/**
@@ -181,7 +316,7 @@ public class World {
 		int[] allSidesClear = {DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE};
 		
 		for (NoWalkZone zone : noWalkZones) {
-			System.out.println("working");
+			//System.out.println("working");
 			int[] sidesBlocked = allSidesClear;
 			
 			if (player.blockadeAbove(zone.boundaries)) {
@@ -210,5 +345,19 @@ public class World {
 	
 	public void dispose() {
 		background.dispose();
+	}
+
+	@Override
+	public void createPacketHandlers() {
+		client.getPacketManager().addPacketHandler("A0", new PackA0WorldHandler(this));
+		client.getPacketManager().addPacketHandler("Z9", new PackZ9WorldHandler(this));
+		client.getPacketManager().addPacketHandler("B0", new PackB0WorldHandler(this));
+		client.getPacketManager().addPacketHandler("B1", new PackB1WorldHandler(this));
+	}
+
+	@Override
+	public void removePacketHandlers() {
+		// TODO Auto-generated method stub
+		
 	}
 }

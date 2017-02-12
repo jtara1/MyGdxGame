@@ -46,7 +46,7 @@ public class Player {
 	
 	public boolean blockadeRight(Rectangle rect) {
 		boundaries = getBoundaries();
-		System.out.println(boundaries);
+		//System.out.println(boundaries);
 		if (boundaries.overlaps(rect)) {
 			if ((boundaries.x + boundaries.width) >= rect.x) {
 				return true;

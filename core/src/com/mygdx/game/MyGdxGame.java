@@ -1,7 +1,10 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -39,11 +42,12 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 		playerSprite = new Texture("BODY_animation.png");
 		playerStance = new TextureRegion(playerSprite, 0, 0, 64, 64);
-		world = new World("forest_preview.png");
+		//world = new World("forest_preview.png");
 //		map = new TmxMapLoader(new ExternalFileHandleResolver()).load("map.tmx");
 		if (GameState == GAME_STATE.MULTIPLAYER) {
 			//lobby = new Lobby("127.0.0.1", 5000, new LobbyMember("what up"));
@@ -67,7 +71,10 @@ public class MyGdxGame extends ApplicationAdapter {
 			battlefield.draw();
 			break;
 		case MULTIPLAYER:
-			if (menu == null) {
+			if (world != null) {
+				world.draw();
+			}
+			else if (menu == null) {
 				lobby.draw();
 				if (lobby.hasFailed()) {
 					System.out.println("Lobby fail");
@@ -75,7 +82,14 @@ public class MyGdxGame extends ApplicationAdapter {
 					menu = new MainMenu();
 				}
 				else if (lobby.hasFinished()) {
-					
+					ArrayList<UserInfo> peerInformation = new ArrayList<UserInfo>();
+					for (int i = 0; i < lobby.lobbyMembers.size(); i++) {
+						peerInformation.add(new UserInfo(lobby.lobbyMembers.get(i).name, lobby.lobbyMembers.get(i).peerID, lobby.lobbyMembers.get(i).heroID));
+					}
+					UserInfo userInfo = new UserInfo(lobby.user.name, lobby.user.peerID, lobby.user.heroID);
+					lobby.removeHandlers();
+					world = new World(lobby.client, userInfo, peerInformation, "forest_preview.png");
+					lobby = null;
 				}
 			}
 			else
@@ -107,6 +121,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.dispose();
 		img.dispose();
 		playerSprite.dispose();
-		world.dispose();
+		if (world != null) {
+			world.dispose();
+		}
 	}
 }

@@ -535,6 +535,11 @@ public final class GdxPacks {
      * <code>uint32 heroID = 2;</code>
      */
     int getHeroID();
+
+    /**
+     * <code>bool inGame = 3;</code>
+     */
+    boolean getInGame();
   }
   /**
    * Protobuf type {@code gdxpacks.PackA1}
@@ -550,6 +555,7 @@ public final class GdxPacks {
     private PackA1() {
       name_ = "";
       heroID_ = 0;
+      inGame_ = false;
     }
 
     @java.lang.Override
@@ -586,6 +592,11 @@ public final class GdxPacks {
             case 16: {
 
               heroID_ = input.readUInt32();
+              break;
+            }
+            case 24: {
+
+              inGame_ = input.readBool();
               break;
             }
           }
@@ -654,6 +665,15 @@ public final class GdxPacks {
       return heroID_;
     }
 
+    public static final int INGAME_FIELD_NUMBER = 3;
+    private boolean inGame_;
+    /**
+     * <code>bool inGame = 3;</code>
+     */
+    public boolean getInGame() {
+      return inGame_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -672,6 +692,9 @@ public final class GdxPacks {
       if (heroID_ != 0) {
         output.writeUInt32(2, heroID_);
       }
+      if (inGame_ != false) {
+        output.writeBool(3, inGame_);
+      }
     }
 
     public int getSerializedSize() {
@@ -685,6 +708,10 @@ public final class GdxPacks {
       if (heroID_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(2, heroID_);
+      }
+      if (inGame_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, inGame_);
       }
       memoizedSize = size;
       return size;
@@ -706,6 +733,8 @@ public final class GdxPacks {
           .equals(other.getName());
       result = result && (getHeroID()
           == other.getHeroID());
+      result = result && (getInGame()
+          == other.getInGame());
       return result;
     }
 
@@ -720,6 +749,9 @@ public final class GdxPacks {
       hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + HEROID_FIELD_NUMBER;
       hash = (53 * hash) + getHeroID();
+      hash = (37 * hash) + INGAME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getInGame());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -842,6 +874,8 @@ public final class GdxPacks {
 
         heroID_ = 0;
 
+        inGame_ = false;
+
         return this;
       }
 
@@ -866,6 +900,7 @@ public final class GdxPacks {
         gdxpacks.GdxPacks.PackA1 result = new gdxpacks.GdxPacks.PackA1(this);
         result.name_ = name_;
         result.heroID_ = heroID_;
+        result.inGame_ = inGame_;
         onBuilt();
         return result;
       }
@@ -913,6 +948,9 @@ public final class GdxPacks {
         }
         if (other.getHeroID() != 0) {
           setHeroID(other.getHeroID());
+        }
+        if (other.getInGame() != false) {
+          setInGame(other.getInGame());
         }
         onChanged();
         return this;
@@ -1031,6 +1069,32 @@ public final class GdxPacks {
       public Builder clearHeroID() {
         
         heroID_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean inGame_ ;
+      /**
+       * <code>bool inGame = 3;</code>
+       */
+      public boolean getInGame() {
+        return inGame_;
+      }
+      /**
+       * <code>bool inGame = 3;</code>
+       */
+      public Builder setInGame(boolean value) {
+        
+        inGame_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool inGame = 3;</code>
+       */
+      public Builder clearInGame() {
+        
+        inGame_ = false;
         onChanged();
         return this;
       }
@@ -1512,6 +1576,1202 @@ public final class GdxPacks {
 
   }
 
+  public interface PackB0OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:gdxpacks.PackB0)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string name = 1;</code>
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>uint32 heroID = 2;</code>
+     */
+    int getHeroID();
+  }
+  /**
+   * Protobuf type {@code gdxpacks.PackB0}
+   */
+  public  static final class PackB0 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:gdxpacks.PackB0)
+      PackB0OrBuilder {
+    // Use PackB0.newBuilder() to construct.
+    private PackB0(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PackB0() {
+      name_ = "";
+      heroID_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private PackB0(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
+              break;
+            }
+            case 16: {
+
+              heroID_ = input.readUInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB0_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB0_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              gdxpacks.GdxPacks.PackB0.class, gdxpacks.GdxPacks.PackB0.Builder.class);
+    }
+
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object name_;
+    /**
+     * <code>string name = 1;</code>
+     */
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string name = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int HEROID_FIELD_NUMBER = 2;
+    private int heroID_;
+    /**
+     * <code>uint32 heroID = 2;</code>
+     */
+    public int getHeroID() {
+      return heroID_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+      }
+      if (heroID_ != 0) {
+        output.writeUInt32(2, heroID_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+      }
+      if (heroID_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, heroID_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof gdxpacks.GdxPacks.PackB0)) {
+        return super.equals(obj);
+      }
+      gdxpacks.GdxPacks.PackB0 other = (gdxpacks.GdxPacks.PackB0) obj;
+
+      boolean result = true;
+      result = result && getName()
+          .equals(other.getName());
+      result = result && (getHeroID()
+          == other.getHeroID());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + HEROID_FIELD_NUMBER;
+      hash = (53 * hash) + getHeroID();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static gdxpacks.GdxPacks.PackB0 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static gdxpacks.GdxPacks.PackB0 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static gdxpacks.GdxPacks.PackB0 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static gdxpacks.GdxPacks.PackB0 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static gdxpacks.GdxPacks.PackB0 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static gdxpacks.GdxPacks.PackB0 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static gdxpacks.GdxPacks.PackB0 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static gdxpacks.GdxPacks.PackB0 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static gdxpacks.GdxPacks.PackB0 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static gdxpacks.GdxPacks.PackB0 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(gdxpacks.GdxPacks.PackB0 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code gdxpacks.PackB0}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:gdxpacks.PackB0)
+        gdxpacks.GdxPacks.PackB0OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB0_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB0_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                gdxpacks.GdxPacks.PackB0.class, gdxpacks.GdxPacks.PackB0.Builder.class);
+      }
+
+      // Construct using gdxpacks.GdxPacks.PackB0.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+
+        heroID_ = 0;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB0_descriptor;
+      }
+
+      public gdxpacks.GdxPacks.PackB0 getDefaultInstanceForType() {
+        return gdxpacks.GdxPacks.PackB0.getDefaultInstance();
+      }
+
+      public gdxpacks.GdxPacks.PackB0 build() {
+        gdxpacks.GdxPacks.PackB0 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public gdxpacks.GdxPacks.PackB0 buildPartial() {
+        gdxpacks.GdxPacks.PackB0 result = new gdxpacks.GdxPacks.PackB0(this);
+        result.name_ = name_;
+        result.heroID_ = heroID_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof gdxpacks.GdxPacks.PackB0) {
+          return mergeFrom((gdxpacks.GdxPacks.PackB0)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(gdxpacks.GdxPacks.PackB0 other) {
+        if (other == gdxpacks.GdxPacks.PackB0.getDefaultInstance()) return this;
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.getHeroID() != 0) {
+          setHeroID(other.getHeroID());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        gdxpacks.GdxPacks.PackB0 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (gdxpacks.GdxPacks.PackB0) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object name_ = "";
+      /**
+       * <code>string name = 1;</code>
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public Builder setName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public Builder clearName() {
+        
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int heroID_ ;
+      /**
+       * <code>uint32 heroID = 2;</code>
+       */
+      public int getHeroID() {
+        return heroID_;
+      }
+      /**
+       * <code>uint32 heroID = 2;</code>
+       */
+      public Builder setHeroID(int value) {
+        
+        heroID_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 heroID = 2;</code>
+       */
+      public Builder clearHeroID() {
+        
+        heroID_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:gdxpacks.PackB0)
+    }
+
+    // @@protoc_insertion_point(class_scope:gdxpacks.PackB0)
+    private static final gdxpacks.GdxPacks.PackB0 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new gdxpacks.GdxPacks.PackB0();
+    }
+
+    public static gdxpacks.GdxPacks.PackB0 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PackB0>
+        PARSER = new com.google.protobuf.AbstractParser<PackB0>() {
+      public PackB0 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new PackB0(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PackB0> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PackB0> getParserForType() {
+      return PARSER;
+    }
+
+    public gdxpacks.GdxPacks.PackB0 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PackB1OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:gdxpacks.PackB1)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>float x = 1;</code>
+     */
+    float getX();
+
+    /**
+     * <code>float y = 2;</code>
+     */
+    float getY();
+
+    /**
+     * <code>float dX = 3;</code>
+     */
+    float getDX();
+
+    /**
+     * <code>float dY = 4;</code>
+     */
+    float getDY();
+  }
+  /**
+   * Protobuf type {@code gdxpacks.PackB1}
+   */
+  public  static final class PackB1 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:gdxpacks.PackB1)
+      PackB1OrBuilder {
+    // Use PackB1.newBuilder() to construct.
+    private PackB1(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PackB1() {
+      x_ = 0F;
+      y_ = 0F;
+      dX_ = 0F;
+      dY_ = 0F;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private PackB1(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 13: {
+
+              x_ = input.readFloat();
+              break;
+            }
+            case 21: {
+
+              y_ = input.readFloat();
+              break;
+            }
+            case 29: {
+
+              dX_ = input.readFloat();
+              break;
+            }
+            case 37: {
+
+              dY_ = input.readFloat();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB1_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB1_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              gdxpacks.GdxPacks.PackB1.class, gdxpacks.GdxPacks.PackB1.Builder.class);
+    }
+
+    public static final int X_FIELD_NUMBER = 1;
+    private float x_;
+    /**
+     * <code>float x = 1;</code>
+     */
+    public float getX() {
+      return x_;
+    }
+
+    public static final int Y_FIELD_NUMBER = 2;
+    private float y_;
+    /**
+     * <code>float y = 2;</code>
+     */
+    public float getY() {
+      return y_;
+    }
+
+    public static final int DX_FIELD_NUMBER = 3;
+    private float dX_;
+    /**
+     * <code>float dX = 3;</code>
+     */
+    public float getDX() {
+      return dX_;
+    }
+
+    public static final int DY_FIELD_NUMBER = 4;
+    private float dY_;
+    /**
+     * <code>float dY = 4;</code>
+     */
+    public float getDY() {
+      return dY_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (x_ != 0F) {
+        output.writeFloat(1, x_);
+      }
+      if (y_ != 0F) {
+        output.writeFloat(2, y_);
+      }
+      if (dX_ != 0F) {
+        output.writeFloat(3, dX_);
+      }
+      if (dY_ != 0F) {
+        output.writeFloat(4, dY_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (x_ != 0F) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(1, x_);
+      }
+      if (y_ != 0F) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(2, y_);
+      }
+      if (dX_ != 0F) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(3, dX_);
+      }
+      if (dY_ != 0F) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(4, dY_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof gdxpacks.GdxPacks.PackB1)) {
+        return super.equals(obj);
+      }
+      gdxpacks.GdxPacks.PackB1 other = (gdxpacks.GdxPacks.PackB1) obj;
+
+      boolean result = true;
+      result = result && (
+          java.lang.Float.floatToIntBits(getX())
+          == java.lang.Float.floatToIntBits(
+              other.getX()));
+      result = result && (
+          java.lang.Float.floatToIntBits(getY())
+          == java.lang.Float.floatToIntBits(
+              other.getY()));
+      result = result && (
+          java.lang.Float.floatToIntBits(getDX())
+          == java.lang.Float.floatToIntBits(
+              other.getDX()));
+      result = result && (
+          java.lang.Float.floatToIntBits(getDY())
+          == java.lang.Float.floatToIntBits(
+              other.getDY()));
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + X_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getX());
+      hash = (37 * hash) + Y_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getY());
+      hash = (37 * hash) + DX_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getDX());
+      hash = (37 * hash) + DY_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getDY());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static gdxpacks.GdxPacks.PackB1 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static gdxpacks.GdxPacks.PackB1 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static gdxpacks.GdxPacks.PackB1 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static gdxpacks.GdxPacks.PackB1 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static gdxpacks.GdxPacks.PackB1 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static gdxpacks.GdxPacks.PackB1 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static gdxpacks.GdxPacks.PackB1 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static gdxpacks.GdxPacks.PackB1 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static gdxpacks.GdxPacks.PackB1 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static gdxpacks.GdxPacks.PackB1 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(gdxpacks.GdxPacks.PackB1 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code gdxpacks.PackB1}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:gdxpacks.PackB1)
+        gdxpacks.GdxPacks.PackB1OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB1_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB1_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                gdxpacks.GdxPacks.PackB1.class, gdxpacks.GdxPacks.PackB1.Builder.class);
+      }
+
+      // Construct using gdxpacks.GdxPacks.PackB1.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        x_ = 0F;
+
+        y_ = 0F;
+
+        dX_ = 0F;
+
+        dY_ = 0F;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return gdxpacks.GdxPacks.internal_static_gdxpacks_PackB1_descriptor;
+      }
+
+      public gdxpacks.GdxPacks.PackB1 getDefaultInstanceForType() {
+        return gdxpacks.GdxPacks.PackB1.getDefaultInstance();
+      }
+
+      public gdxpacks.GdxPacks.PackB1 build() {
+        gdxpacks.GdxPacks.PackB1 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public gdxpacks.GdxPacks.PackB1 buildPartial() {
+        gdxpacks.GdxPacks.PackB1 result = new gdxpacks.GdxPacks.PackB1(this);
+        result.x_ = x_;
+        result.y_ = y_;
+        result.dX_ = dX_;
+        result.dY_ = dY_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof gdxpacks.GdxPacks.PackB1) {
+          return mergeFrom((gdxpacks.GdxPacks.PackB1)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(gdxpacks.GdxPacks.PackB1 other) {
+        if (other == gdxpacks.GdxPacks.PackB1.getDefaultInstance()) return this;
+        if (other.getX() != 0F) {
+          setX(other.getX());
+        }
+        if (other.getY() != 0F) {
+          setY(other.getY());
+        }
+        if (other.getDX() != 0F) {
+          setDX(other.getDX());
+        }
+        if (other.getDY() != 0F) {
+          setDY(other.getDY());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        gdxpacks.GdxPacks.PackB1 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (gdxpacks.GdxPacks.PackB1) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private float x_ ;
+      /**
+       * <code>float x = 1;</code>
+       */
+      public float getX() {
+        return x_;
+      }
+      /**
+       * <code>float x = 1;</code>
+       */
+      public Builder setX(float value) {
+        
+        x_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float x = 1;</code>
+       */
+      public Builder clearX() {
+        
+        x_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float y_ ;
+      /**
+       * <code>float y = 2;</code>
+       */
+      public float getY() {
+        return y_;
+      }
+      /**
+       * <code>float y = 2;</code>
+       */
+      public Builder setY(float value) {
+        
+        y_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float y = 2;</code>
+       */
+      public Builder clearY() {
+        
+        y_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float dX_ ;
+      /**
+       * <code>float dX = 3;</code>
+       */
+      public float getDX() {
+        return dX_;
+      }
+      /**
+       * <code>float dX = 3;</code>
+       */
+      public Builder setDX(float value) {
+        
+        dX_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float dX = 3;</code>
+       */
+      public Builder clearDX() {
+        
+        dX_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float dY_ ;
+      /**
+       * <code>float dY = 4;</code>
+       */
+      public float getDY() {
+        return dY_;
+      }
+      /**
+       * <code>float dY = 4;</code>
+       */
+      public Builder setDY(float value) {
+        
+        dY_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float dY = 4;</code>
+       */
+      public Builder clearDY() {
+        
+        dY_ = 0F;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:gdxpacks.PackB1)
+    }
+
+    // @@protoc_insertion_point(class_scope:gdxpacks.PackB1)
+    private static final gdxpacks.GdxPacks.PackB1 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new gdxpacks.GdxPacks.PackB1();
+    }
+
+    public static gdxpacks.GdxPacks.PackB1 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PackB1>
+        PARSER = new com.google.protobuf.AbstractParser<PackB1>() {
+      public PackB1 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new PackB1(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PackB1> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PackB1> getParserForType() {
+      return PARSER;
+    }
+
+    public gdxpacks.GdxPacks.PackB1 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface PackZ9OrBuilder extends
       // @@protoc_insertion_point(interface_extends:gdxpacks.PackZ9)
       com.google.protobuf.MessageOrBuilder {
@@ -1957,6 +3217,16 @@ public final class GdxPacks {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_gdxpacks_PackA2_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_gdxpacks_PackB0_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_gdxpacks_PackB0_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_gdxpacks_PackB1_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_gdxpacks_PackB1_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_gdxpacks_PackZ9_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -1971,9 +3241,12 @@ public final class GdxPacks {
   static {
     java.lang.String[] descriptorData = {
       "\n\016GdxPacks.proto\022\010gdxpacks\"\026\n\006PackA0\022\014\n\004" +
-      "name\030\001 \001(\t\"&\n\006PackA1\022\014\n\004name\030\001 \001(\t\022\016\n\006he" +
-      "roID\030\002 \001(\r\"\034\n\006PackA2\022\022\n\nnumClients\030\001 \001(\r" +
-      "\"\024\n\006PackZ9\022\n\n\002id\030\001 \001(\005b\006proto3"
+      "name\030\001 \001(\t\"6\n\006PackA1\022\014\n\004name\030\001 \001(\t\022\016\n\006he" +
+      "roID\030\002 \001(\r\022\016\n\006inGame\030\003 \001(\010\"\034\n\006PackA2\022\022\n\n" +
+      "numClients\030\001 \001(\r\"&\n\006PackB0\022\014\n\004name\030\001 \001(\t" +
+      "\022\016\n\006heroID\030\002 \001(\r\"6\n\006PackB1\022\t\n\001x\030\001 \001(\002\022\t\n" +
+      "\001y\030\002 \001(\002\022\n\n\002dX\030\003 \001(\002\022\n\n\002dY\030\004 \001(\002\"\024\n\006Pack" +
+      "Z9\022\n\n\002id\030\001 \001(\005b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1998,15 +3271,27 @@ public final class GdxPacks {
     internal_static_gdxpacks_PackA1_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_gdxpacks_PackA1_descriptor,
-        new java.lang.String[] { "Name", "HeroID", });
+        new java.lang.String[] { "Name", "HeroID", "InGame", });
     internal_static_gdxpacks_PackA2_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_gdxpacks_PackA2_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_gdxpacks_PackA2_descriptor,
         new java.lang.String[] { "NumClients", });
-    internal_static_gdxpacks_PackZ9_descriptor =
+    internal_static_gdxpacks_PackB0_descriptor =
       getDescriptor().getMessageTypes().get(3);
+    internal_static_gdxpacks_PackB0_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_gdxpacks_PackB0_descriptor,
+        new java.lang.String[] { "Name", "HeroID", });
+    internal_static_gdxpacks_PackB1_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_gdxpacks_PackB1_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_gdxpacks_PackB1_descriptor,
+        new java.lang.String[] { "X", "Y", "DX", "DY", });
+    internal_static_gdxpacks_PackZ9_descriptor =
+      getDescriptor().getMessageTypes().get(5);
     internal_static_gdxpacks_PackZ9_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_gdxpacks_PackZ9_descriptor,
