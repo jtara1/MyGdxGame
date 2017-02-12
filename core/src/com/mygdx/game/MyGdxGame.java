@@ -38,7 +38,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	public Lobby lobby;
 	public MainMenu menu;
 	
-	public static GAME_STATE GameState = GAME_STATE.WORLD;
+	public static GAME_STATE GameState = GAME_STATE.MULTIPLAYER;
 	
 	@Override
 	public void create () {
@@ -46,7 +46,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		img = new Texture("badlogic.jpg");
 		playerSprite = new Texture("BODY_animation.png");
 		playerStance = new TextureRegion(playerSprite, 0, 0, 64, 64);
-		world = new World("forest_preview.png");
+		if (GameState == GAME_STATE.WORLD)
+			world = new World("forest_preview.png");
 //		map = new TmxMapLoader(new ExternalFileHandleResolver()).load("map.tmx");
 		if (GameState == GAME_STATE.MULTIPLAYER) {
 			//lobby = new Lobby("127.0.0.1", 5000, new LobbyMember("what up"));
