@@ -35,33 +35,13 @@ public class Player {
 		
 		position = new Vector2(500, 500);
 		velocity = new Vector2(0, 0);
-		speed = 180f;
+		speed = 100f;
 		
 //		boundaries = new Rectangle(position.x, position.y, spriteSize, spriteSize);
 	}
 	
 	public Rectangle getBoundaries() {
 		return new Rectangle(position.x, position.y, spriteSize, spriteSize);
-	}
-	
-	public boolean inHeightRange(Rectangle rect) {
-		boundaries = getBoundaries();
-		if (boundaries.y <= rect.y + rect.height &&
-			boundaries.y + boundaries.height >= rect.y) {
-			
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean inWidthRange(Rectangle rect) {
-		boundaries = getBoundaries();
-		if (boundaries.x + boundaries.width >= rect.x &&
-			boundaries.x <= rect.x + rect.width) {
-			
-			return true;
-		}
-		return false;
 	}
 	
 	public boolean blockadeRight(Rectangle rect) {

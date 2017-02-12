@@ -77,9 +77,9 @@ public class World {
 		int offset = 10;
 		int[] sidesBlocked = playerCollidedWithNoWalkZone();
 		// debug
-		for (int i = 0; i < sidesBlocked.length; i++) {
-			System.out.print(sidesBlocked[i] + " ");
-		} System.out.println();
+//		for (int i = 0; i < sidesBlocked.length; i++) {
+//			System.out.print(sidesBlocked[i] + " ");
+//		} System.out.println();
 		
 		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
 			if (sidesBlocked[3] == DIRECTION_NONE) {
@@ -120,8 +120,6 @@ public class World {
 			   
 //		System.out.println("Player position: " + player.position);
 		playerCollidedWithNoWalkZone();
-//		if (isPlayerOutOfBounds())
-//			System.out.println("out of bounds");
 		
 		batch.draw(player.sprite, player.position.x, player.position.y);
 		input.move(player, camera);
