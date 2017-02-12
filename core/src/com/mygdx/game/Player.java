@@ -33,7 +33,7 @@ public class Player {
 		
 		sprite = sprites[2];
 		
-		position = new Vector2(0, 0);
+		position = new Vector2(500, 500);
 		velocity = new Vector2(0, 0);
 		speed = 180f;
 		

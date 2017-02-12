@@ -12,11 +12,14 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.google.protobuf.*;
 import com.google.protobuf.AbstractMessage.Builder;
 
+import protoclient.Client;
+
 public class MyGdxGame extends ApplicationAdapter {
 	public enum GAME_STATE {
 		MAIN_MENU,
 		WORLD,
 		COMBAT,
+		MULTIPLAYER
 	}
 	
 	SpriteBatch batch;
@@ -27,8 +30,9 @@ public class MyGdxGame extends ApplicationAdapter {
 	TiledMap map;
 	
 	public World world;
+	public Lobby lobby;
 	
-	public GAME_STATE gameState = GAME_STATE.WORLD;
+	public static GAME_STATE GameState = GAME_STATE.WORLD;
 	
 	@Override
 	public void create () {
@@ -38,6 +42,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		playerStance = new TextureRegion(playerSprite, 0, 0, 64, 64);
 		world = new World("forest_preview.png");
 //		map = new TmxMapLoader(new ExternalFileHandleResolver()).load("map.tmx");
+		if (GameState == GAME_STATE.MULTIPLAYER) {
+			lobby = new Lobby("127.0.0.1", 5000, new LobbyMember("dat boi"));
+		}
 	}
 
 	@Override
@@ -45,7 +52,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		switch(gameState) {
+		switch(GameState) {
 		case MAIN_MENU:
 			break;
 		case WORLD:
@@ -53,6 +60,8 @@ public class MyGdxGame extends ApplicationAdapter {
 			break;
 		case COMBAT:
 //			battlefield.draw();
+			break;
+		case MULTIPLAYER:
 			break;
 		}
 		

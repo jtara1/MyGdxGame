@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,6 +24,8 @@ public class World {
 	public Player player;
 	
 	public ArrayList<NoWalkZone> noWalkZones;
+
+	public InputHandler input;
 	
 	public World(String fileName) {
 		
@@ -41,8 +41,17 @@ public class World {
 		player = new Player();
 		
 		noWalkZones = new ArrayList<NoWalkZone>();
+
+		input = new InputHandler();
 		
-		createNoWalkZones();
+		float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        
+        //Creates a new camera, sets its position focused on the player, and zooms out
+        camera = new OrthographicCamera(30, 30 * (h / w));
+        camera.position.set(player.position.x,player.position.y,0);
+        camera.zoom += 20;
+        camera.update();
 	}
 	
 	public World(String fileName, float width, float height) {
@@ -56,6 +65,8 @@ public class World {
 	}
 	
 	public void draw() {
+	    batch.setProjectionMatrix(camera.combined);
+	        
 		batch.begin();
 		batch.draw(background, 0, 0);
 		
@@ -105,6 +116,7 @@ public class World {
 //			System.out.println("out of bounds");
 		
 		batch.draw(player.sprite, player.position.x, player.position.y);
+		input.move(player, camera);
 		batch.end();
 	}
 	
@@ -148,4 +160,5 @@ public class World {
 	public void dispose() {
 		background.dispose();
 	}
+	
 }
