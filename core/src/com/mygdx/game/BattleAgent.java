@@ -11,15 +11,21 @@ public abstract class BattleAgent {
 	
 	public TextureRegion curSprite;
 	
-	public Vector2 location; 
+	private Vector2 location; 
 	
-	public TextureRegion standingSprite;
+	private TextureRegion standingSprite;
 	
 	private TextureRegion[] attackSprites;
 	
 	private TextureRegion[] moveSprites;
 	
-	
+	/**
+	 * 
+	 * @param location
+	 * @param standingSprite
+	 * @param attackSprites
+	 * @param moveSprites
+	 */
 	public void setUp(Vector2 location,TextureRegion standingSprite, 
 			TextureRegion[] attackSprites, TextureRegion[] moveSprites)
 	{
@@ -49,6 +55,9 @@ public abstract class BattleAgent {
 		}
 	}
 	
+	/**
+	 * This a an animation of move 
+	 */
 	public void move() {
 		if(moveCounter<moveSprites.length*10-1)
 			moveCounter++;
