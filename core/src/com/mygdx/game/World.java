@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 public class World {
-	float playerSpeed = 60.0f;
-	
 	public Texture background;
 	
 	public Rectangle boundaries;
@@ -41,7 +39,7 @@ public class World {
 	public void draw() {
 		batch.begin();
 		batch.draw(background, 0, 0);
-		batch.draw(player.playerSprite, player.position.x, player.position.y);
+		batch.draw(player.sprite, player.position.x, player.position.y);
 		batch.end();
 	}
 	
@@ -50,18 +48,26 @@ public class World {
 	}
 	
 	public void render() {
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) 
-		      player.position.x -= Gdx.graphics.getDeltaTime() * playerSpeed;
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) 
-			   player.position.x += Gdx.graphics.getDeltaTime() * playerSpeed;
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) 
-		      player.position.y += Gdx.graphics.getDeltaTime() * playerSpeed;
-		   if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) 
-			   player.position.y -= Gdx.graphics.getDeltaTime() * playerSpeed;
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
+		      player.position.x -= Gdx.graphics.getDeltaTime() * player.speed;
+		      player.sprite = player.sprites[1];
+		   }
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) { 
+			   player.position.x += Gdx.graphics.getDeltaTime() * player.speed;
+			   player.sprite = player.sprites[3];
+		   }
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) { 
+		      player.position.y += Gdx.graphics.getDeltaTime() * player.speed;
+		      player.sprite = player.sprites[0];
+		   }
+		   if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) { 
+			   player.position.y -= Gdx.graphics.getDeltaTime() * player.speed;
+			   player.sprite = player.sprites[2];
+		   }
 
 		   //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		   batch.begin();
-		   batch.draw(player.playerSprite, player.position.x, player.position.y);
+		   batch.draw(player.sprite, player.position.x, player.position.y);
 		   batch.end();
 		} 
 }
