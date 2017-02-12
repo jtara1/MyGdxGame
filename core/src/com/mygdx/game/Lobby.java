@@ -82,7 +82,7 @@ class PackA0Handler implements PacketHandler {
 			builderA1.setName(lobby.user.name);
 			builderA1.setHeroID(0);
 			OPacket oPack = new OPacket("A1", builderA1.build().toByteString());
-			oPack.addSendToID(OPacket.BROADCAST_ID);
+			oPack.addSendToID(pack.GetSenderID());
 			lobby.client.send(oPack);
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
