@@ -16,7 +16,6 @@ import com.mygdx.game.MyGdxGame.GAME_STATE;
 
 import gdxpacks.GdxPacks.PackA0;
 import gdxpacks.GdxPacks.PackA1;
-import gdxpacks.GdxPacks.PackA2;
 import gdxpacks.GdxPacks.PackB0;
 import gdxpacks.GdxPacks.PackB1;
 import gdxpacks.GdxPacks.PackZ9;
@@ -36,12 +35,12 @@ class PackA0WorldHandler implements PacketHandler {
 
 	@Override
 	public boolean run(IPacket pack) {
-		PackA0 packA0 = null;
 		PackA1.Builder builderA1 = PackA1.newBuilder();
 		builderA1.setName(world.userInfo.name);
 		builderA1.setHeroID(world.userInfo.heroID);
+		builderA1.setInGame(true);
 		OPacket oPack = new OPacket("A1", builderA1.build().toByteString());
-		oPack.addSendToID(OPacket.BROADCAST_ID);
+		oPack.addSendToID(pack.GetSenderID());
 		world.client.send(oPack);
 		return true;
 	}
@@ -91,8 +90,6 @@ class PackB1WorldHandler implements PacketHandler {
 		}
 		return false;
 	}
-	
-	
 }
 
 class PackZ9WorldHandler implements PacketHandler {
@@ -416,5 +413,9 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public void removePacketHandlers() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public boolean isFinished() {
+		return !client.isRunning();
 	}
 }

@@ -42,7 +42,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 		playerSprite = new Texture("BODY_animation.png");
@@ -73,6 +72,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		case MULTIPLAYER:
 			if (world != null) {
 				world.draw();
+				if (world.isFinished()) {
+					world = null;
+					menu = new MainMenu();
+				}
 			}
 			else if (menu == null) {
 				lobby.draw();
