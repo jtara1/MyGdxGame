@@ -84,8 +84,10 @@ class PackB1WorldHandler implements PacketHandler {
 				if (world.peerControllers.get(i).getPeerID() == pack.GetSenderID())
 				{
 					world.peerControllers.get(i).update(packB1);
+					System.out.println("HI");
 				}
 			}
+			System.out.println("dog");
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 		}
@@ -300,12 +302,17 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		}
 //		input.move(player, camera);
 		batch.end();
-		PackB1.Builder packB1Builder = PackB1.newBuilder();
-		packB1Builder.setX(player.position.x);
-		packB1Builder.setY(player.position.y);
-		OPacket oPack = new OPacket("B1", packB1Builder.build().toByteString());
-		oPack.addSendToID(65535);
-		client.send(oPack);
+		if (peerControllers.size() > 0) {
+			PackB1.Builder packB1Builder = PackB1.newBuilder();
+			packB1Builder.setX(player.position.x);
+			packB1Builder.setY(player.position.y);
+			OPacket oPack = new OPacket("B1", packB1Builder.build().toByteString());
+			oPack.setReliable(false);
+			for (int i = 0; i < peerControllers.size(); i++) {
+				oPack.addSendToID(peerControllers.get(i).getPeerID());
+			}
+			client.send(oPack);
+		}
 	}
 	
 	/**
@@ -402,8 +409,10 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	}
 	@Override
 	public void createPacketHandlers() {
-		// TODO Auto-generated method stub
-		
+		client.getPacketManager().addPacketHandler("A0", new PackA0WorldHandler(this));
+		client.getPacketManager().addPacketHandler("B0", new PackB0WorldHandler(this));
+		client.getPacketManager().addPacketHandler("B1", new PackB1WorldHandler(this));
+		client.getPacketManager().addPacketHandler("Z9", new PackZ9WorldHandler(this));
 	}
 	@Override
 	public void removePacketHandlers() {
