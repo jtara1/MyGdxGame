@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import protopacks.PackFW.PackHeaderOut;
+import ProtobufPackets.PackFW.PackHeaderOut;
 
 public class HeaderManager {
 	boolean isBigEndian;

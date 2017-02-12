@@ -1,24 +1,35 @@
 package com.mygdx.game;
 
-import java.awt.Font;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import gdxpacks.GdxPacks.PackA0;
+import gdxpacks.GdxPacks.PackA1;
+import gdxpacks.GdxPacks.PackA2;
+import gdxpacks.GdxPacks.PackZ9;
 import protoclient.Client;
 import protoclient.ConnectionEventHandler;
 import protoclient.IPacket;
 import protoclient.OPacket;
 import protoclient.PacketHandler;
 import protoclient.PacketHandlerOwner;
-import protopacks.PackFW.PackA0;
-import protopacks.PackFW.PackA1;
 
 
 class LobbyConnectionOpenHandler implements ConnectionEventHandler {
@@ -30,13 +41,7 @@ class LobbyConnectionOpenHandler implements ConnectionEventHandler {
 	
 	@Override
 	public void run(String err) {
-		PackA0.Builder builderA0 = PackA0.newBuilder();
-		builderA0.setName(lobby.user.name);
-		OPacket oPack = new OPacket("A0", builderA0.build().toByteString());
-		oPack.setReliable(false);
-		oPack.addSendToID(OPacket.BROADCAST_ID);
-		lobby.client.send(oPack);
-		lobby.setDisplayLobby(true);
+		
 	}
 }
 
@@ -71,9 +76,11 @@ class PackA0Handler implements PacketHandler {
 			peer.heroID = 0;
 			peer.peerID = pack.GetSenderID();
 			lobby.lobbyMembers.add(peer);
+			lobby.setNumPeersRequired(lobby.getNumPeersRequired() - 1);
 			
 			PackA1.Builder builderA1 = PackA1.newBuilder();
 			builderA1.setName(lobby.user.name);
+			builderA1.setHeroID(0);
 			OPacket oPack = new OPacket("A1", builderA1.build().toByteString());
 			oPack.setReliable(false);
 			oPack.addSendToID(OPacket.BROADCAST_ID);
@@ -103,7 +110,61 @@ class PackA1Handler implements PacketHandler {
 			peer.heroID = packA1.getHeroID();
 			peer.peerID = pack.GetSenderID();
 			lobby.lobbyMembers.add(peer);
+			lobby.setNumPeersRequired(lobby.getNumPeersRequired() - 1);
 			System.out.println("A1 received");
+		} catch (InvalidProtocolBufferException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+	}
+}
+
+class PackA2Handler implements PacketHandler
+{
+	private Lobby lobby;
+	
+	PackA2Handler(Lobby lobby)
+	{
+		this.lobby = lobby;
+	}
+	@Override
+	public boolean run(IPacket pack) {
+		PackA2 packA2 = null;
+		try {
+			packA2 = PackA2.parseFrom(pack.getData());
+			lobby.setNumPeersRequired(packA2.getNumClients());
+			PackA0.Builder builderA0 = PackA0.newBuilder();
+			builderA0.setName(lobby.user.name);
+			OPacket oPack = new OPacket("A0", builderA0.build().toByteString());
+			oPack.addSendToID(OPacket.BROADCAST_ID);
+			lobby.client.send(oPack);
+			System.out.println("A2 received");
+		} catch (InvalidProtocolBufferException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+}
+
+class PackZ9Handler implements PacketHandler {
+	private Lobby lobby;
+	
+	public PackZ9Handler(Lobby lobby) {
+		this.lobby = lobby;
+	}
+
+	@Override
+	public boolean run(IPacket pack) {
+		PackZ9 packZ9;
+		try {
+			packZ9 = PackZ9.parseFrom(pack.getData());
+			lobby.removeLobbyMember(packZ9.getId());
+			lobby.setNumPeersRequired(lobby.getNumPeersRequired() - 1);
+			if (lobby.getNumPeersRequired() <= 0) {
+				lobby.setDisplayLobby(true);
+			}
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -138,6 +199,7 @@ public class Lobby implements PacketHandlerOwner
 	private static final float TITLE_OFF = 60;
 	private static final float MEMBER_BOX_OFF = 10;
 	private static final float MEMBER_BOX_H = 50;
+	private int numPeersRequired;
 	private ShapeRenderer renderer;
 	private boolean displayLobby;
 	public Client client;
@@ -145,9 +207,14 @@ public class Lobby implements PacketHandlerOwner
 	public LinkedList<LobbyMember> lobbyMembers;
 	private BitmapFont font;
 	private SpriteBatch batch;
+	private boolean failed;
+	private boolean finished;
+	private Stage stage;
 
 	public Lobby(String address, int port, LobbyMember user)
 	{
+		failed = false;
+		finished = false;
 		displayLobby = false;
 		this.user = user;
 		lobbyMembers = new LinkedList<LobbyMember>();
@@ -165,21 +232,54 @@ public class Lobby implements PacketHandlerOwner
 			drawLobby();
 		}
 	}
+	
+	public boolean hasFailed() {
+		return failed || !client.isRunning();
+	}
+	
+	public boolean hasFinished() {
+		return finished;
+	}
 
 	@Override
 	public void createPacketHandlers() {
 		client.getPacketManager().addPacketHandler("A0", new PackA0Handler(this));
 		client.getPacketManager().addPacketHandler("A1", new PackA1Handler(this));
+		client.getPacketManager().addPacketHandler("A2", new PackA2Handler(this));
+		client.getPacketManager().addPacketHandler("Z9", new PackZ9Handler(this));
 	}
 
 	@Override
 	public void removePacketHandlers() {
 		client.getPacketManager().removePacketHandler("A0");
 		client.getPacketManager().removePacketHandler("A1");
+		client.getPacketManager().removePacketHandler("A2");
+		client.getPacketManager().removePacketHandler("Z9");
 	}
 	
 	public void setDisplayLobby(boolean mode) {
 		this.displayLobby = mode;
+	}
+	
+	void removeLobbyMember(int id) {
+		Iterator <LobbyMember> iter = lobbyMembers.iterator();
+		while (iter.hasNext()) {
+			if (iter.next().peerID == id) {
+				iter.remove();
+				break;
+			}
+		}
+	}
+	
+	int getNumPeersRequired() {
+		return numPeersRequired;
+	}
+	
+	void setNumPeersRequired(int size) {
+		this.numPeersRequired = size;
+		if (numPeersRequired <= 0) {
+			displayLobby = true;
+		}
 	}
 	
 	private void initInternet(String address, int port) {
@@ -194,6 +294,7 @@ public class Lobby implements PacketHandlerOwner
 		renderer = new ShapeRenderer();
 		font = new BitmapFont();
 		batch = new SpriteBatch();
+		initStage();
 	}
 	
 	private void drawLoad() {
@@ -214,6 +315,8 @@ public class Lobby implements PacketHandlerOwner
 		batch.begin();
 		drawMemberBoxText();
 		batch.end();
+		
+		stage.draw();
 	}
 	
 	private void drawLobbyBackground() {
@@ -253,5 +356,53 @@ public class Lobby implements PacketHandlerOwner
 			iter.next().drawText(font, batch, SCREEN_W/2 + MEMBER_BOX_OFF * 4, y + MEMBER_BOX_H/2 + 10);
 			y -= MEMBER_BOX_H + MEMBER_BOX_OFF;
 		}
+	}
+	
+	public void initStage() {
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+		
+		Skin skin = new Skin();
+		Pixmap pixmap = new Pixmap(100, 100, Format.RGBA8888);
+		pixmap.setColor(Color.GREEN);
+		pixmap.fill();
+ 
+		skin.add("white", new Texture(pixmap));
+		
+		TextButtonStyle readyButtonStyle = new TextButtonStyle();
+		readyButtonStyle.up = skin.newDrawable("white", Color.GREEN);
+		readyButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
+		readyButtonStyle.checked = skin.newDrawable("white", Color.DARK_GRAY);
+		readyButtonStyle.over = skin.newDrawable("white", Color.CYAN);
+		readyButtonStyle.font = font;
+		skin.add("ready", readyButtonStyle);
+		
+		TextButton readyButton = new TextButton("Ready", skin, "ready");
+		readyButton.setPosition(540, 430);
+		readyButton.setSize(100, 50);
+		
+		stage.addActor(readyButton);
+		
+		TextButtonStyle exitButtonStyle = new TextButtonStyle();
+		exitButtonStyle.up = skin.newDrawable("white", Color.RED);
+		exitButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
+		exitButtonStyle.checked = skin.newDrawable("white", Color.DARK_GRAY);
+		exitButtonStyle.over = skin.newDrawable("white", Color.FIREBRICK);
+ 
+		exitButtonStyle.font = font;
+		skin.add("exit", exitButtonStyle);
+		
+		TextButton exitButton = new TextButton("Exit", skin, "exit");
+		exitButton.setPosition(0, 430);
+		exitButton.setSize(100, 50);
+		exitButton.addListener( new ClickListener() {              
+		    @Override
+		    public void clicked(InputEvent event, float x, float y) {
+		    	System.out.println("CLICKED");
+		        client.stop();
+		    };
+		});
+		
+		stage.addActor(exitButton);
 	}
 }
