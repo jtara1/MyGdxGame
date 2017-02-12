@@ -37,6 +37,8 @@ public class World implements InputProcessor {
 	
 	public OrthographicCamera camera;
 	
+	public boolean readyForBattlefield = false;
+	
 	public World(String fileName) {
 		
 		// image of World background loaded as a Texture
@@ -91,13 +93,14 @@ public class World implements InputProcessor {
 	}
 	public void drawMonsters() {
 		for(int i = 0; i < monsters.size(); i++)
-			batch.draw(monsters.get(i).curSprite, monsters.get(i).getLocation().x, monsters.get(i).getLocation().y);
+			batch.draw(monsters.get(i).standingSprite, monsters.get(i).location.x, monsters.get(i).location.y);
 	}
 	public void checkMonsterCollision(){
 		for(int i = 0; i < monsters.size(); i++){
-			if(Math.abs(monsters.get(i).getLocation().x - player.position.x) <= 15 &&
-					Math.abs(monsters.get(i).getLocation().y - player.position.y) <= 15)
-				MyGdxGame.GameState = GAME_STATE.COMBAT;
+			if(Math.abs(monsters.get(i).location.x - player.position.x) <= 15 &&
+					Math.abs(monsters.get(i).location.y - player.position.y) <= 15)
+				readyForBattlefield = true;
+//				MyGdxGame.GameState = GAME_STATE.COMBAT;
 		}
 	}
 	public void createNoWalkZones() {
@@ -118,7 +121,7 @@ public class World implements InputProcessor {
 //			System.out.print(sidesBlocked[i] + " ");
 //		} System.out.println();
 		
-		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
+		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {// && !player.blockadeAhead(DIRECTION_LEFT, blockade)) {
 			if (sidesBlocked[3] == DIRECTION_NONE) {
 //				player.move(-player.speed * Gdx.graphics.getDeltaTime(), 0);
 				player.move(DIRECTION_LEFT);
@@ -170,6 +173,10 @@ public class World implements InputProcessor {
 		
 //		input.move(player, camera);
 		batch.end();
+		
+		if (readyForBattlefield) {
+			MyGdxGame.GameState = GAME_STATE.COMBAT;
+		}
 	}
 	
 	/**
