@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -22,13 +23,6 @@ public class Player {
 	public Player() {
 		fileName = "mage walking poses sheet copy.png";
 //		super(0, 0, (float)spriteSize, (float)spriteSize);
-		if (spritePage == null) {
-			spritePage = new Texture("mage walking poses sheet copy.png");
-			
-			sprite = sprites[2];
-		}
-		
-		sprite = sprites[2];
 		
 		position = new Vector2(500, 500);
 		velocity = new Vector2(0, 0);
@@ -37,7 +31,7 @@ public class Player {
 //		boundaries = new Rectangle(position.x, position.y, spriteSize, spriteSize);
 	}
 	
-	public void draw() {
+	public void draw(SpriteBatch batch) {
 		if (spritePage == null) {
 			spritePage = new Texture(fileName);
 		}
@@ -47,6 +41,7 @@ public class Player {
 		if (sprite == null) {
 			sprite = sprites[2];
 		}
+		batch.draw(sprite, position.x, position.y);
 	}
 
 	public void initializeSprites() {

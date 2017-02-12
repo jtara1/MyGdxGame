@@ -28,7 +28,13 @@ public class PeerController {
 	
 	public void draw(SpriteBatch batch) {
 		player.move(dX, dY);
-		batch.draw(player.sprite, player.position.x, player.position.y);
+		if (font == null) {
+			font = new BitmapFont();
+			font.getData().setScale(1f);
+			font.setColor(1, 1, 1, .9f);
+		}
+		font.draw(batch, name, player.position.x, player.position.y + player.getBoundaries().height + 30);
+		player.draw(batch);
 	}
 	
 	public int getPeerID() {

@@ -238,6 +238,7 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	        
 		batch.begin();
 		batch.draw(background, 0, 0);
+		player.draw(batch);
 		
 		int offset = 10;
 		int[] sidesBlocked = playerCollidedWithNoWalkZone();
@@ -288,13 +289,10 @@ public class World implements PacketHandlerOwner, InputProcessor {
 		}
 		camera.position.set(player.position, 0);
 		camera.update();
-		
-		player.draw();
 			   
 //		System.out.println("Player position: " + player.position);
 //		playerCollidedWithNoWalkZone();
 		
-		batch.draw(player.sprite, player.position.x, player.position.y);
 		drawMonsters();
 		checkMonsterCollision();
 		for (int i = 0; i < peerControllers.size(); i++) {
