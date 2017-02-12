@@ -119,11 +119,11 @@ class PackZ9WorldHandler implements PacketHandler {
 }
 
 public class World implements PacketHandlerOwner, InputProcessor {
-	public final int DIRECTION_UP = 0;
-	public final int DIRECTION_RIGHT = 1;
-	public final int DIRECTION_DOWN = 2;
-	public final int DIRECTION_LEFT = 3;
-	public final int DIRECTION_NONE = -1;
+	public static final int DIRECTION_UP = 0;
+	public static final int DIRECTION_RIGHT = 1;
+	public static final int DIRECTION_DOWN = 2;
+	public static final int DIRECTION_LEFT = 3;
+	public static final int DIRECTION_NONE = -1;
 	
 	public Client client;
 	
@@ -348,6 +348,54 @@ public class World implements PacketHandlerOwner, InputProcessor {
 	public void dispose() {
 		background.dispose();
 	}
-==== BASE ====
-==== BASE ====
+	@Override
+	public boolean keyDown(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean keyUp(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean scrolled(int amount) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public void createPacketHandlers() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void removePacketHandlers() {
+		// TODO Auto-generated method stub
+		
+	}
 }
