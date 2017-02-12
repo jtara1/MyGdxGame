@@ -29,6 +29,7 @@ public class TCPConnection implements Runnable
 			inStream = socket.getInputStream();
 			outStream = socket.getOutputStream();
 		} catch (IOException e) {
+			/*
 			allowFail = true;
 			ConnectionEventHandler conFailHandler = owner.getConnectionFailHandler();
 			e.printStackTrace();
@@ -38,6 +39,7 @@ public class TCPConnection implements Runnable
 			
 			System.err.println(e.getMessage());
 			return;
+			*/
 		}
 		owner.startUDP(socket.getLocalPort());
 		ConnectionEventHandler conOpenHandler = owner.getConnectionOpenHandler();
@@ -60,6 +62,7 @@ public class TCPConnection implements Runnable
 					System.err.println("Unrecognized key: " + iPack.getPKey());
 				}
 			} catch (IOException e) {
+				/*
 				e.printStackTrace();
 				if (!socket.isClosed() && socket.isConnected()) {
 					ConnectionEventHandler conErrorHandler = owner.getConnectionErrorHandler();
@@ -67,27 +70,32 @@ public class TCPConnection implements Runnable
 					if (conErrorHandler != null) {
 						conErrorHandler.run("Recv error: " + e.getMessage());
 					}
+					
 					try {
 						socket.close();
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					
 					return;
 				}
 				else {
 					System.err.println("Connection closed: " + e.getMessage());
 					if (!socket.isClosed()) {
+						
 						try {
-							socket.close();
+							//socket.close();
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
+						
 					}
 					ConnectionEventHandler conCloseHandler = owner.getConnectionCloseHandler();
 					conCloseHandler.run(e.getMessage());
 					return;
 				}
+				*/
 			}
 		}
 	}
@@ -109,12 +117,14 @@ public class TCPConnection implements Runnable
 	public void stop() {
 		if (socket != null) {
 			System.out.println("STOPPED CALLED");
+			/*
 			try {
 				socket.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 		}
 	}
 	
