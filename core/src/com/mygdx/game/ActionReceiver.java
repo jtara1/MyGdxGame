@@ -6,16 +6,16 @@ package com.mygdx.game;
 
 public class ActionReceiver {
 	
-	private Agent issuer;
+	private BattleAgent issuer;
 	
-	private Agent receiver; //the index of action receiver
+	private BattleAgent receiver;
 	
 	private int priority;
 	
 	private String actionType;
 	
 	
-	public ActionReceiver(Agent issuer,Agent receiver,String actionType,int priority)
+	public ActionReceiver(BattleAgent issuer,BattleAgent receiver,String actionType,int priority)
 	{
 		this.issuer=issuer;
 		this.receiver=receiver;
@@ -23,12 +23,12 @@ public class ActionReceiver {
 		this.priority=priority;
 	}
 	
-	public Agent getIssuer()
+	public BattleAgent getIssuer()
 	{
 		return issuer;
 	}
 	
-	public Agent getReceiver()
+	public BattleAgent getReceiver()
 	{
 		return receiver;
 	}
