@@ -21,12 +21,10 @@ public class ActionController {
 		
 	private int attackStage;	
 	
-	private Texture fireball;
-	
-	public ActionController(SpriteBatch batch)
+	public ActionController()
 	{
 		this.batch=batch;
-//		fireball=new Texture(Gdx.files.internal("Magic/Fireball1_GD_BlueKPL.png"));
+		fireball=new Texture(Gdx.files.internal("Magic/Fireball1_GD_BlueKPL.png"));
 	}
 	
 	/**

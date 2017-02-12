@@ -82,7 +82,6 @@ class PackA0Handler implements PacketHandler {
 			builderA1.setName(lobby.user.name);
 			builderA1.setHeroID(0);
 			OPacket oPack = new OPacket("A1", builderA1.build().toByteString());
-			oPack.setReliable(false);
 			oPack.addSendToID(OPacket.BROADCAST_ID);
 			lobby.client.send(oPack);
 		} catch (InvalidProtocolBufferException e) {
@@ -145,7 +144,6 @@ class PackA2Handler implements PacketHandler
 		}
 		return true;
 	}
-	
 }
 
 class PackZ9Handler implements PacketHandler {
@@ -162,9 +160,6 @@ class PackZ9Handler implements PacketHandler {
 			packZ9 = PackZ9.parseFrom(pack.getData());
 			lobby.removeLobbyMember(packZ9.getId());
 			lobby.setNumPeersRequired(lobby.getNumPeersRequired() - 1);
-			if (lobby.getNumPeersRequired() <= 0) {
-				lobby.setDisplayLobby(true);
-			}
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -280,6 +275,12 @@ public class Lobby implements PacketHandlerOwner
 		if (numPeersRequired <= 0) {
 			displayLobby = true;
 		}
+	}
+	
+	void removeHandlers() {
+		removePacketHandlers();
+		client.addConnectionCloseHandler(null);
+		client.addConnectionOpenHandler(null);
 	}
 	
 	private void initInternet(String address, int port) {
@@ -400,6 +401,12 @@ public class Lobby implements PacketHandlerOwner
 		    public void clicked(InputEvent event, float x, float y) {
 		    	System.out.println("CLICKED");
 		        client.stop();
+		    };
+		});
+		readyButton.addListener( new ClickListener() {              
+		    @Override
+		    public void clicked(InputEvent event, float x, float y) {
+		    	finished = true;
 		    };
 		});
 		

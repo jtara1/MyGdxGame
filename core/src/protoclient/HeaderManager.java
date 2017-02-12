@@ -60,7 +60,7 @@ public class HeaderManager {
 		ByteString data = ByteString.copyFrom(serializeHeaderSize(headerData.size()));
 		data = data.concat(headerData);
 		data = data.concat(oPack.getData());
-		System.out.println(data.size());
+		//System.out.println(data.size());
 		return data;
 	}
 	
