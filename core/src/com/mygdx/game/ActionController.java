@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -25,12 +26,14 @@ public class ActionController {
 	public ActionController(SpriteBatch batch)
 	{
 		this.batch=batch;
+		fireball=new Texture(Gdx.files.internal("Magic/Fireball1_GD_BlueKPL.png"));
 	}
 	
 	/**
 	 * 
 	 * @param action
-	 * @return false if this action is done
+	 * "basicAttack" for basic attack
+	 * @return true if the action is still processing
 	 */
 	public boolean update()
 	{
@@ -40,7 +43,7 @@ public class ActionController {
 		{
 			if(thisAction.getAction().equals("basicAttack"))
 				isActionEnd=this.BasicAttack();
-			return isActionEnd;
+			return true;
 		}
 	}
 	
@@ -48,7 +51,7 @@ public class ActionController {
 	 * call this when a new action is receiving
 	 * @param action
 	 */
-	public void loadNewAction(ActionReceiver action,SpriteBatch batch)
+	public void loadNewAction(ActionReceiver action)
 	{
 		thisAction=action;
 		isActionEnd=false;
@@ -57,9 +60,9 @@ public class ActionController {
 		
 		destination=new Vector2(thisAction.getReceiver().getLocation());
 		
-		attackStage=0;
-		
 		velocity=new Vector2((destination.x-initialLoc.x)/100f,(destination.y-initialLoc.y)/100f);
+		
+		attackStage=0;
 		
 		
 	}
@@ -70,12 +73,11 @@ public class ActionController {
 	 */
 	public boolean BasicAttack()
 	{
-		boolean attackDone;
+		boolean attackDone=false;
 		switch(attackStage) 
 		{
 		case 0: //the action has not started yet
 			attackStage=1;
-			attackDone=false;
 			break;
 		case 1: //the issuer is moving
 			if(thisAction.getIssuer().getLocation().x==destination.x &&
@@ -86,12 +88,10 @@ public class ActionController {
 				thisAction.getIssuer().changeLocation(thisAction.getIssuer().getLocation().add(velocity));
 				thisAction.getIssuer().move();
 			}
-			attackDone=false;
 			break;
 		case 2: //get to the destination and start to attack
 			if(thisAction.getIssuer().basicAttack())
 				attackStage=3;
-			attackDone=false;
 			break;
 		case 3: //the attack is done and moving back
 			if(thisAction.getIssuer().getLocation().x==initialLoc.x &&
@@ -102,68 +102,17 @@ public class ActionController {
 				thisAction.getIssuer().changeLocation(thisAction.getIssuer().getLocation().mulAdd(velocity, -1f));
 				thisAction.getIssuer().move();
 			}
-			attackDone=false;
 			break;
 		case 4:
 			thisAction.getIssuer().stand();
+			thisAction.done();
 			attackDone=true;
 			break;
-		default:
-			attackDone=false;
 		}	
 		return attackDone;
 	}
 	
-	/**
-	 * 
-	 * @return true if actionEnd
-	 */
-	public boolean FireBall()
-	{
-		boolean attackDone;
-		switch(attackStage) 
-		{
-		case 0: //the action has not started yet
-			attackStage=1;
-			attackDone=false;
-			break;
-		case 1: //the issuer is moving
-			if(thisAction.getIssuer().getLocation().x==destination.x &&
-			thisAction.getIssuer().getLocation().y==destination.y)
-				attackStage=2;
-			else
-			{
-				thisAction.getIssuer().changeLocation(thisAction.getIssuer().getLocation().add(velocity));
-				thisAction.getIssuer().move();
-			}
-			attackDone=false;
-			break;
-		case 2: //get to the destination and start to attack
-			if(thisAction.getIssuer().basicAttack())
-				attackStage=3;
-			attackDone=false;
-			break;
-		case 3: //the attack is done and moving back
-			if(thisAction.getIssuer().getLocation().x==initialLoc.x &&
-					thisAction.getIssuer().getLocation().y==initialLoc.y)
-				attackStage=4;
-			else
-			{
-				thisAction.getIssuer().changeLocation(thisAction.getIssuer().getLocation().mulAdd(velocity, -1f));
-				thisAction.getIssuer().move();
-			}
-			attackDone=false;
-			break;
-		case 4:
-			thisAction.getIssuer().stand();
-			attackDone=true;
-			break;
-		default:
-			attackDone=false;
-		}	
-		return attackDone;
-	}
-	
+
 
 	
 }
