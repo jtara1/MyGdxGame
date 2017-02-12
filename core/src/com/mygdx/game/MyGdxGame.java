@@ -29,6 +29,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	TiledMap map;
 	
+	BattleField battlefield;
+	
 	public World world;
 	public Lobby lobby;
 	
@@ -45,6 +47,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (GameState == GAME_STATE.MULTIPLAYER) {
 			lobby = new Lobby("127.0.0.1", 5000, new LobbyMember("dat boi"));
 		}
+		battlefield = new BattleField();
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			world.draw();
 			break;
 		case COMBAT:
-//			battlefield.draw();
+			battlefield.draw();
 			break;
 		case MULTIPLAYER:
 			break;

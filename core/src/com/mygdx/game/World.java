@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 
 public class World {
 	public final int DIRECTION_UP = 0;
@@ -45,6 +46,8 @@ public class World {
 		player = new Player();
 		
 		noWalkZones = new ArrayList<NoWalkZone>();
+		
+		createNoWalkZones();
 
 		input = new InputHandler();
 		
@@ -84,45 +87,50 @@ public class World {
 		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
 			if (sidesBlocked[3] == DIRECTION_NONE) {
 				player.position.x -= Gdx.graphics.getDeltaTime() * player.speed;
+				camera.translate(-Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 			} else {
-				player.position.x += offset;
+				player.position.x += Gdx.graphics.getDeltaTime() * player.speed * 2;
+				camera.translate(Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
 			}
 			player.sprite = player.sprites[1];
-			camera.translate(-Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) {
 			if (sidesBlocked[1] == DIRECTION_NONE) {
 				player.position.x += Gdx.graphics.getDeltaTime() * player.speed;
+				camera.translate(Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 			} else {
-				player.position.x -= offset;
+				player.position.x -= Gdx.graphics.getDeltaTime() * player.speed * 2;
+				camera.translate(-Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
 			}
 			player.sprite = player.sprites[3];
-			camera.translate(Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) {
 			if (sidesBlocked[0] == DIRECTION_NONE) {
 				player.position.y += Gdx.graphics.getDeltaTime() * player.speed;
+				camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed, 0);
 			} else {
-				player.position.y -= offset;
+				player.position.y -= Gdx.graphics.getDeltaTime() * player.speed * 2;
+				camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
 			}
 			player.sprite = player.sprites[0];
-			camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed, 0);
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) {
 			if (sidesBlocked[2] == DIRECTION_NONE) {
 				player.position.y -= Gdx.graphics.getDeltaTime() * player.speed;
+				camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed, 0);
 			} else {
-				player.position.y += offset;
+				player.position.y += Gdx.graphics.getDeltaTime() * player.speed * 2;
+				camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
 			}
 			player.sprite = player.sprites[2];
-			camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed, 0);
 		}
+		camera.update();
 			   
 //		System.out.println("Player position: " + player.position);
-		playerCollidedWithNoWalkZone();
+//		playerCollidedWithNoWalkZone();
 		
 		batch.draw(player.sprite, player.position.x, player.position.y);
-		input.move(player, camera);
+//		input.move(player, camera);
 		batch.end();
 	}
 	
@@ -137,6 +145,7 @@ public class World {
 		int[] allSidesClear = {DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE, DIRECTION_NONE};
 		
 		for (NoWalkZone zone : noWalkZones) {
+			System.out.println("working");
 			int[] sidesBlocked = allSidesClear;
 			
 			if (player.blockadeAbove(zone.boundaries)) {

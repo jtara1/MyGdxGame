@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Player {
 	private Texture spritePage;
-	private static final int spriteSize = 64;
+	private int spriteSize = 64;
 	private Rectangle boundaries;
 	
 	public TextureRegion sprite;
@@ -35,7 +35,7 @@ public class Player {
 		
 		position = new Vector2(500, 500);
 		velocity = new Vector2(0, 0);
-		speed = 100f;
+		speed = 180f;
 		
 //		boundaries = new Rectangle(position.x, position.y, spriteSize, spriteSize);
 	}
