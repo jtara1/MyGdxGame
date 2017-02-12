@@ -14,7 +14,7 @@ import com.mygdx.game.MyGdxGame.GAME_STATE;
 public class BattleTest extends ApplicationAdapter {
 	
 	SpriteBatch batch;
-	Monster monster1,monster2;
+	BattleAgent monster1,player;
 
 	ActionController ac;
 	ActionReceiver ar;
@@ -25,9 +25,9 @@ public class BattleTest extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		monster1=new Monster(new Vector2(100,100));
-		monster2=new Monster(new Vector2(430,250));
+		player=new BattlePlayer(new Vector2(425,250));
 		ac=new ActionController();
-		ar=new ActionReceiver(monster2, monster1, "basicAttack", 0);
+		ar=new ActionReceiver(monster1, player, "basicAttack", 0);
 		ac.loadNewAction(ar);
 	}
 
@@ -38,17 +38,16 @@ public class BattleTest extends ApplicationAdapter {
 		
 		batch.begin();
 		
-		ac.update();
-		//if(Gdx.input.isKeyPressed(Keys.A))
-		//{
+		ac.update(batch);
+		if(Gdx.input.isKeyPressed(Keys.A))
+		{
 			
-		//	ac.loadNewAction(ar);
-		//}
+			ac.loadNewAction(ar);
+		}
 		
 
 		batch.draw(monster1.curSprite, monster1.getLocation().x,monster1.getLocation().y);
-		monster2.curSprite.flip(false,false );
-		batch.draw(monster2.curSprite, monster2.getLocation().x,monster2.getLocation().y);
+		batch.draw(player.curSprite, player.getLocation().x,player.getLocation().y);
 		batch.end();
 	
 	}
