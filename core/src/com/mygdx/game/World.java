@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class World {
@@ -27,6 +28,8 @@ public class World {
 	public Player player;
 	
 	public ArrayList<NoWalkZone> noWalkZones;
+	
+	public ArrayList<Monster> monsters;
 
 	public InputHandler input;
 	
@@ -46,8 +49,10 @@ public class World {
 		player = new Player();
 		
 		noWalkZones = new ArrayList<NoWalkZone>();
+		monsters = new ArrayList<Monster>();
 		
 		createNoWalkZones();
+		setMonsters();
 
 		input = new InputHandler();
 		
@@ -65,7 +70,27 @@ public class World {
 		this(fileName);
 		boundaries = new Rectangle(0, 0, width, height);
 	}
-	
+	public void setMonsters() {
+		Vector2 pos1 = new Vector2(200,200);
+		Monster mons1 = new Monster(pos1);
+		monsters.add(mons1);
+		Vector2 pos2 = new Vector2(150,500);
+		Monster mons2 = new Monster(pos2);
+		monsters.add(mons2);
+		Vector2 pos3 = new Vector2(800,400);
+		Monster mons3 = new Monster(pos3);
+		monsters.add(mons3);
+		Vector2 pos4 = new Vector2(500,100);
+		Monster mons4 = new Monster(pos4);
+		monsters.add(mons4);
+		Vector2 pos5 = new Vector2(600,600);
+		Monster mons5 = new Monster(pos5);
+		monsters.add(mons5);
+	}
+	public void drawMonsters() {
+		for(int i = 0; i < monsters.size(); i++)
+			batch.draw(monsters.get(i).standingSprite, monsters.get(i).location.x, monsters.get(i).location.y);
+	}
 	public void createNoWalkZones() {
 		NoWalkZone zone1 = new NoWalkZone(335, 149, 130, 140);
 		noWalkZones.add(zone1);
@@ -130,6 +155,7 @@ public class World {
 //		playerCollidedWithNoWalkZone();
 		
 		batch.draw(player.sprite, player.position.x, player.position.y);
+		drawMonsters();
 //		input.move(player, camera);
 		batch.end();
 	}

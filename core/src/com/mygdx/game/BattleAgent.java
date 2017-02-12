@@ -11,9 +11,9 @@ public abstract class BattleAgent {
 	
 	public TextureRegion curSprite;
 	
-	private Vector2 location; 
+	public Vector2 location; 
 	
-	private TextureRegion standingSprite;
+	public TextureRegion standingSprite;
 	
 	private TextureRegion[] attackSprites;
 	
