@@ -25,9 +25,9 @@ public class BattleTest extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		monster1=new Monster(new Vector2(100,100));
 		player=new BattlePlayer(new Vector2(425,250));
-		ac=new ActionController();
-		ar=new ActionReceiver(monster1, player, "basicAttack", 0);
-		ac.loadNewAction(ar);
+//		ac=new ActionController();
+//		ar=new ActionReceiver(monster1, player, "basicAttack", 0);
+//		ac.loadNewAction(ar);
 	}
 
 	@Override
@@ -37,11 +37,10 @@ public class BattleTest extends ApplicationAdapter {
 		
 		batch.begin();
 		
-		ac.update(batch);
+//		ac.update(batch);
 		if(Gdx.input.isKeyPressed(Keys.A))
 		{
-			
-			ac.loadNewAction(ar);
+//			ac.loadNewAction(ar);
 		}
 		
 

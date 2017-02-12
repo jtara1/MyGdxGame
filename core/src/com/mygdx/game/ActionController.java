@@ -10,7 +10,7 @@ public class ActionController {
 	
 	private ActionReceiver thisAction;
 	
-	private boolean isActionEnd=true;	
+	private boolean isActionEnd=true;
 	
 	private Vector2 initialLoc;
 	

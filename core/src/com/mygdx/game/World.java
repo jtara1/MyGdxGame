@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,12 +14,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MyGdxGame.GAME_STATE;
 
-public class World {
-	public final int DIRECTION_UP = 0;
-	public final int DIRECTION_RIGHT = 1;
-	public final int DIRECTION_DOWN = 2;
-	public final int DIRECTION_LEFT = 3;
-	public final int DIRECTION_NONE = -1;
+public class World implements InputProcessor {
+	public static final int DIRECTION_UP = 0;
+	public static final int DIRECTION_RIGHT = 1;
+	public static final int DIRECTION_DOWN = 2;
+	public static final int DIRECTION_LEFT = 3;
+	public static final int DIRECTION_NONE = -1;
 	
 	public Texture background;
 	
@@ -119,44 +120,45 @@ public class World {
 		
 		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
 			if (sidesBlocked[3] == DIRECTION_NONE) {
-				player.position.x -= Gdx.graphics.getDeltaTime() * player.speed;
+//				player.move(-player.speed * Gdx.graphics.getDeltaTime(), 0);
+				player.move(DIRECTION_LEFT);
 				camera.translate(-Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 			} else {
 				player.position.x += Gdx.graphics.getDeltaTime() * player.speed * 2;
 				camera.translate(Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
 			}
-			player.sprite = player.sprites[1];
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) {
 			if (sidesBlocked[1] == DIRECTION_NONE) {
-				player.position.x += Gdx.graphics.getDeltaTime() * player.speed;
+//				player.move(player.speed * Gdx.graphics.getDeltaTime(), 0);
+				player.move(DIRECTION_RIGHT);
 				camera.translate(Gdx.graphics.getDeltaTime() * player.speed, 0, 0);
 			} else {
 				player.position.x -= Gdx.graphics.getDeltaTime() * player.speed * 2;
 				camera.translate(-Gdx.graphics.getDeltaTime() * player.speed * 2, 0, 0);
 			}
-			player.sprite = player.sprites[3];
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_UP)) {
 			if (sidesBlocked[0] == DIRECTION_NONE) {
-				player.position.y += Gdx.graphics.getDeltaTime() * player.speed;
+				player.move(DIRECTION_UP);
+//				player.move(0, player.speed * Gdx.graphics.getDeltaTime());
 				camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed, 0);
 			} else {
 				player.position.y -= Gdx.graphics.getDeltaTime() * player.speed * 2;
 				camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
 			}
-			player.sprite = player.sprites[0];
 		}
 		if(Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) {
 			if (sidesBlocked[2] == DIRECTION_NONE) {
-				player.position.y -= Gdx.graphics.getDeltaTime() * player.speed;
+//				player.move(0, -player.speed * Gdx.graphics.getDeltaTime());
+				player.move(DIRECTION_DOWN);
 				camera.translate(0, -Gdx.graphics.getDeltaTime() * player.speed, 0);
 			} else {
 				player.position.y += Gdx.graphics.getDeltaTime() * player.speed * 2;
 				camera.translate(0, Gdx.graphics.getDeltaTime() * player.speed * 2, 0);
 			}
-			player.sprite = player.sprites[2];
 		}
+		camera.position.set(player.position, 0);
 		camera.update();
 			   
 //		System.out.println("Player position: " + player.position);
@@ -210,5 +212,56 @@ public class World {
 	
 	public void dispose() {
 		background.dispose();
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		// TODO Auto-generated method stub
+		switch(keycode) {
+		
+		}
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
